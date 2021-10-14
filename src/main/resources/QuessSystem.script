@@ -1,0 +1,133 @@
+CREATE USER MESSINOVASCO PASSWORD "MRLOUIZ12" ADMIN
+CREATE ALIAS DAYNAME FOR "org.hsql.Library.dayname"
+CREATE ALIAS SPACE FOR "org.hsql.Library.space"
+CREATE ALIAS SUBSTRING FOR "org.hsql.Library.substring"
+CREATE ALIAS SQRT FOR "java.lang.Math.sqrt"
+CREATE ALIAS ABS FOR "java.lang.Math.abs"
+CREATE ALIAS POWER FOR "java.lang.Math.pow"
+CREATE ALIAS CHAR FOR "org.hsql.Library.character"
+CREATE ALIAS CONCAT FOR "org.hsql.Library.concat"
+CREATE ALIAS PI FOR "org.hsql.Library.pi"
+CREATE ALIAS SECOND FOR "org.hsql.Library.second"
+CREATE ALIAS TRUNCATE FOR "org.hsql.Library.truncate"
+CREATE ALIAS MONTH FOR "org.hsql.Library.month"
+CREATE ALIAS LOWER FOR "org.hsql.Library.lcase"
+CREATE ALIAS ATAN2 FOR "java.lang.Math.atan2"
+CREATE ALIAS REPEAT FOR "org.hsql.Library.repeat"
+CREATE ALIAS DAYOFMONTH FOR "org.hsql.Library.dayofmonth"
+CREATE ALIAS TAN FOR "java.lang.Math.tan"
+CREATE ALIAS RADIANS FOR "java.lang.Math.toRadians"
+CREATE ALIAS FLOOR FOR "java.lang.Math.floor"
+CREATE ALIAS NOW FOR "org.hsql.Library.now"
+CREATE ALIAS ACOS FOR "java.lang.Math.acos"
+CREATE ALIAS DAYOFWEEK FOR "org.hsql.Library.dayofweek"
+CREATE ALIAS CEILING FOR "java.lang.Math.ceil"
+CREATE ALIAS DAYOFYEAR FOR "org.hsql.Library.dayofyear"
+CREATE ALIAS LCASE FOR "org.hsql.Library.lcase"
+CREATE ALIAS WEEK FOR "org.hsql.Library.week"
+CREATE ALIAS SOUNDEX FOR "org.hsql.Library.soundex"
+CREATE ALIAS ASIN FOR "java.lang.Math.asin"
+CREATE ALIAS LOCATE FOR "org.hsql.Library.locate"
+CREATE ALIAS EXP FOR "java.lang.Math.exp"
+CREATE ALIAS MONTHNAME FOR "org.hsql.Library.monthname"
+CREATE ALIAS YEAR FOR "org.hsql.Library.year"
+CREATE ALIAS LEFT FOR "org.hsql.Library.left"
+CREATE ALIAS ROUNDMAGIC FOR "org.hsql.Library.roundMagic"
+CREATE ALIAS BITOR FOR "org.hsql.Library.bitor"
+CREATE ALIAS LTRIM FOR "org.hsql.Library.ltrim"
+CREATE ALIAS COT FOR "org.hsql.Library.cot"
+CREATE ALIAS COS FOR "java.lang.Math.cos"
+CREATE ALIAS MOD FOR "org.hsql.Library.mod"
+CREATE ALIAS SIGN FOR "org.hsql.Library.sign"
+CREATE ALIAS DEGREES FOR "java.lang.Math.toDegrees"
+CREATE ALIAS LOG FOR "java.lang.Math.log"
+CREATE ALIAS SIN FOR "java.lang.Math.sin"
+CREATE ALIAS CURTIME FOR "org.hsql.Library.curtime"
+CREATE ALIAS DIFFERENCE FOR "org.hsql.Library.difference"
+CREATE ALIAS INSERT FOR "org.hsql.Library.insert"
+CREATE ALIAS DATABASE FOR "org.hsql.Library.database"
+CREATE ALIAS MINUTE FOR "org.hsql.Library.minute"
+CREATE ALIAS HOUR FOR "org.hsql.Library.hour"
+CREATE ALIAS IDENTITY FOR "org.hsql.Library.identity"
+CREATE ALIAS QUARTER FOR "org.hsql.Library.quarter"
+CREATE ALIAS CURDATE FOR "org.hsql.Library.curdate"
+CREATE ALIAS BITAND FOR "org.hsql.Library.bitand"
+CREATE ALIAS USER FOR "org.hsql.Library.user"
+CREATE ALIAS UCASE FOR "org.hsql.Library.ucase"
+CREATE ALIAS RTRIM FOR "org.hsql.Library.rtrim"
+CREATE ALIAS LOG10 FOR "org.hsql.Library.log10"
+CREATE ALIAS RIGHT FOR "org.hsql.Library.right"
+CREATE ALIAS ATAN FOR "java.lang.Math.atan"
+CREATE ALIAS UPPER FOR "org.hsql.Library.ucase"
+CREATE ALIAS ASCII FOR "org.hsql.Library.ascii"
+CREATE ALIAS RAND FOR "java.lang.Math.random"
+CREATE ALIAS LENGTH FOR "org.hsql.Library.length"
+CREATE ALIAS ROUND FOR "org.hsql.Library.round"
+CREATE ALIAS REPLACE FOR "org.hsql.Library.replace"
+/*C1*/CONNECT USER messinovasco PASSWORD "Mrlouiz12"
+CREATE TABLE USUARIOS (id INTEGER NOT NULL IDENTITY, \u000alogin VARCHAR(30) NOT NULL, \u000asenha VARCHAR(30) NOT NULL, \u000aemail VARCHAR(30) NOT NULL, \u000atentativasAcesso INTEGER NOT NULL, \u000aadm BIT NOT NULL, \u000agerente BIT NOT NULL, \u000adepartamento INTEGER NOT NULL, \u000aPRIMARY KEY(id))
+INSERT INTO USUARIOS VALUES(0,'mrlouiz','TXJsb3VpejEy','quesssystem@gmail.com',0,true,true,0)
+CREATE TABLE DEPARTAMENTOS (id INTEGER NOT NULL IDENTITY, \u000anome VARCHAR(30) NOT NULL, \u000aPRIMARY KEY(id))
+INSERT INTO DEPARTAMENTOS VALUES(0,'Arquitetos')
+CREATE TABLE GRUPOS (id INTEGER NOT NULL IDENTITY, \u000anome VARCHAR(30) NOT NULL, \u000alider INTEGER, \u000aPRIMARY KEY(id))
+CREATE TABLE USUARIOSGRUPOS (id INTEGER NOT NULL IDENTITY, \u000aidusuario INTEGER NOT NULL, \u000aidgrupo INTEGER NOT NULL, \u000aPRIMARY KEY(id))
+CREATE TABLE CADASTROS (id INTEGER NOT NULL IDENTITY, \u000anome VARCHAR(30) NOT NULL, \u000atabela VARCHAR(30) NOT NULL, \u000atipopermissao VARCHAR(30) NOT NULL, \u000apermitidos INTEGER NOT NULL, \u000aPRIMARY KEY(id))
+CREATE TABLE CAMPOSCADASTROS (id INTEGER NOT NULL IDENTITY, \u000aidformulario INTEGER NOT NULL, \u000aordem INTEGER NOT NULL, \u000alabel VARCHAR(30) NOT NULL, \u000acoluna VARCHAR(30) NOT NULL, \u000atipo VARCHAR(30) NOT NULL, \u000avinculado BIT NOT NULL, \u000abloqueado BIT NOT NULL, \u000aobrigatorio BIT NOT NULL, \u000aPRIMARY KEY(id))
+DELETE FROM USUARIOS WHERE ID=0
+INSERT INTO USUARIOS VALUES(0,'mrlouiz','TXJsb3VpejEy','quesssystem@gmail.com',0,true,true,0)
+INSERT INTO DEPARTAMENTOS VALUES(1,'teste')
+DELETE FROM DEPARTAMENTOS WHERE ID=1
+INSERT INTO DEPARTAMENTOS VALUES(1,'teste')
+DELETE FROM USUARIOS WHERE ID=0
+INSERT INTO USUARIOS VALUES(0,'mrlouiz','TXJsb3VpejEy','quesssystem@gmail.com',0,true,true,1)
+INSERT INTO CADASTROS VALUES(0,'cad','cad','Departamento',1)
+CREATE TABLE cad (id INTEGER NOT NULL IDENTITY, \u000aregistrado_em TIMESTAMP NOT NULL, \u000aregistrado_por INTEGER NOT NULL, \u000aultima_atualizacao TIMESTAMP NOT NULL, \u000aatualizado_por INTEGER NOT NULL, \u000aPRIMARY KEY(id))
+INSERT INTO CAMPOSCADASTROS VALUES(0,0,1,'Registrado em','registrado_em','Data hora',false,false,false)
+INSERT INTO CAMPOSCADASTROS VALUES(1,0,2,'Registrado por','registrado_por','Num\u00e9rico',false,false,false)
+INSERT INTO CAMPOSCADASTROS VALUES(2,0,3,'\u00daltima atualiza\u00e7\u00e3o','ultima_atualizacao','Data hora',false,false,false)
+INSERT INTO CAMPOSCADASTROS VALUES(3,0,4,'Atualizado por','atualizado_por','Num\u00e9rico',false,false,false)
+/*C7*/CONNECT USER messinovasco PASSWORD "Mrlouiz12"
+DELETE FROM USUARIOS WHERE ID=0
+INSERT INTO USUARIOS VALUES(0,'mrlouiz','TXJsb3VpejEy','quesssystem@gmail.com',0,true,true,1)
+DELETE FROM USUARIOS WHERE ID=0
+INSERT INTO USUARIOS VALUES(0,'mrlouiz','TXJsb3VpejEy','quesssystem@gmail.com',0,true,true,0)
+INSERT INTO USUARIOS VALUES(1,'aaaaa','YWFhYWE=','@.com',0,false,false,1)
+DELETE FROM CADASTROS WHERE ID=0
+INSERT INTO CADASTROS VALUES(0,'cad','cad','Usu\u00e1rio',1)
+DELETE FROM USUARIOS WHERE ID=1
+DELETE FROM CADASTROS WHERE ID=0
+INSERT INTO CADASTROS VALUES(0,'cad','cad','Usu\u00e1rio',-1)
+DELETE FROM CADASTROS WHERE ID=0
+INSERT INTO CADASTROS VALUES(0,'cad','cad','Departamento',1)
+DELETE FROM DEPARTAMENTOS WHERE ID=1
+DELETE FROM CADASTROS WHERE ID=0
+INSERT INTO CADASTROS VALUES(0,'cad','cad','Departamento',-1)
+INSERT INTO GRUPOS VALUES(0,'teste',NULL)
+DELETE FROM CADASTROS WHERE ID=0
+INSERT INTO CADASTROS VALUES(0,'cad','cad','Grupo',0)
+DELETE FROM GRUPOS WHERE ID=0
+DELETE FROM CADASTROS WHERE ID=0
+INSERT INTO CADASTROS VALUES(0,'cad','cad','Gerente de departamento',0)
+DELETE FROM USUARIOS WHERE ID=0
+DELETE FROM CADASTROS WHERE ID=0
+INSERT INTO CADASTROS VALUES(0,'cad','cad','Gerente de departamento',-1)
+DELETE FROM DEPARTAMENTOS WHERE ID=0
+INSERT INTO GRUPOS VALUES(1,'gr',NULL)
+INSERT INTO DEPARTAMENTOS VALUES(2,'a')
+INSERT INTO USUARIOS VALUES(2,'aaaaaa','YWFhYWFh','@.com',0,false,false,2)
+DELETE FROM GRUPOS WHERE ID=1
+INSERT INTO GRUPOS VALUES(1,'gr',2)
+INSERT INTO USUARIOSGRUPOS VALUES(0,2,1)
+DELETE FROM CADASTROS WHERE ID=0
+INSERT INTO CADASTROS VALUES(0,'cad','cad','L\u00edder de grupo',2)
+DELETE FROM USUARIOS WHERE ID=2
+INSERT INTO USUARIOS VALUES(2,'aaaaaa','YWFhYWFh','@.com',0,false,false,2)
+DELETE FROM USUARIOS WHERE ID=2
+INSERT INTO USUARIOS VALUES(2,'aaaaaa','YWFhYWFh','@.com',0,false,true,2)
+DELETE FROM CADASTROS WHERE ID=0
+INSERT INTO CADASTROS VALUES(0,'cad','cad','Gerente de departamento',2)
+DELETE FROM USUARIOS WHERE ID=2
+INSERT INTO USUARIOS VALUES(2,'aaaaaa','YWFhYWFh','@.com',0,false,false,2)
+DELETE FROM CADASTROS WHERE ID=0
+INSERT INTO CADASTROS VALUES(0,'cad','cad','L\u00edder de grupo',2)
+/*C8*/CONNECT USER messinovasco PASSWORD "mrlouiz12"
