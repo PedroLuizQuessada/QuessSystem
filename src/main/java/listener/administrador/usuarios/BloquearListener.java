@@ -30,7 +30,7 @@ public class BloquearListener implements ActionListener {
 
         try {
             daoUtil.update(String.format("UPDATE USUARIOS SET tentativasAcesso = %d WHERE id = %d", tentativasAcesso, id));
-            janela.carregarTela("SELECT u.id AS id, u.login AS login, u.email AS email, u.tentativasAcesso AS tentativasAcesso, u.adm AS adm, u.gerente AS gerente, u.nativo AS nativo, d.nome AS nomeDepto FROM USUARIOS u INNER JOIN DEPARTAMENTOS d ON u.departamento = d.id ORDER BY login");
+            janela.carregarUsuarios("SELECT u.id AS id, u.login AS login, u.email AS email, u.tentativasAcesso AS tentativasAcesso, u.adm AS adm, u.gerente AS gerente, u.nativo AS nativo, d.nome AS nomeDepto FROM USUARIOS u INNER JOIN DEPARTAMENTOS d ON u.departamento = d.id ORDER BY login");
             JOptionPane.showMessageDialog(null, "Usuário atualizado", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         }
         catch (DaoException exception){

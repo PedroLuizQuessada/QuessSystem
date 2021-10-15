@@ -15,7 +15,7 @@ public class JFrameUtil {
         janela.pack();
         janela.setTitle(titulo);
         janela.setVisible(true);
-        janela.setResizable(true); //TROCAR P FALSE
+        janela.setResizable(false);
         janela.setSize(largura, altura);
     }
 }

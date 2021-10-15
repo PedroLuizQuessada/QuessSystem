@@ -24,7 +24,7 @@ public class ExcluirListener implements ActionListener {
         try{
             daoUtil.delete(String.format("DELETE FROM USUARIOS WHERE id = %d", id));
             daoUtil.update(String.format("UPDATE CADASTROS SET permitidos = -1 WHERE tipopermissao = 'Usuário' AND permitidos = %d", id));
-            janela.carregarTela("SELECT u.id AS id, u.login AS login, u.email AS email, u.tentativasAcesso AS tentativasAcesso, u.adm AS adm, u.gerente AS gerente, u.nativo AS nativo, d.nome AS nomeDepto FROM USUARIOS u INNER JOIN DEPARTAMENTOS d ON u.departamento = d.id ORDER BY login");
+            janela.carregarUsuarios("SELECT u.id AS id, u.login AS login, u.email AS email, u.tentativasAcesso AS tentativasAcesso, u.adm AS adm, u.gerente AS gerente, u.nativo AS nativo, d.nome AS nomeDepto FROM USUARIOS u INNER JOIN DEPARTAMENTOS d ON u.departamento = d.id ORDER BY login");
             JOptionPane.showMessageDialog(null, "Usuário excluído", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         }
         catch (DaoException exception){

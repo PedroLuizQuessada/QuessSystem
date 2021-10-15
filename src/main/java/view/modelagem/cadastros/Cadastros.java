@@ -43,32 +43,25 @@ public class Cadastros extends JFrame {
     private void carregarCabecalho(JPanel jPanel){
         jPanel.setLayout(new GridBagLayout());
 
-        c.insets = new Insets(0, 0, 0, 0);
+        c.insets = new Insets(0, 20, 0, 0);
         c.gridx = 0;
         c.gridy = 0;
         jPanel.add(new JLabel("Nome"), c);
 
-        c.insets = new Insets(0, 50, 0, 0);
+        c.insets = new Insets(0, 40, 0, 0);
         c.gridx++;
         jPanel.add(new JLabel("Permissão"), c);
 
         c.gridx++;
         jPanel.add(new JLabel("Permitidos"), c);
 
-        c.insets = new Insets(-40, 50, 0, 0);
-        c.gridx++;
-        c.gridx++;
-        JButton voltar = new JButton("Voltar");
-        voltar.addActionListener(new VoltarListener(this));
-        jPanel.add(voltar, c);
-
-        c.insets = new Insets(0, 0, 30, 0);
+        c.insets = new Insets(0, 20, 30, 0);
         c.gridx = 0;
         c.gridy++;
         nomeFiltro.setColumns(7);
         jPanel.add(nomeFiltro, c);
 
-        c.insets = new Insets(0, 50, 30, 0);
+        c.insets = new Insets(0, 40, 30, 0);
         c.gridx++;
         comboboxUtil.carregarTiposPermissao(tipoPermissaoFiltro);
         tipoPermissaoFiltro.addActionListener(new TipoPermissaoListener(tipoPermissaoFiltro, permitidosFiltro));
@@ -88,6 +81,11 @@ public class Cadastros extends JFrame {
         JButton adicionarCadastro = new JButton("Adicionar cadastro");
         adicionarCadastro.addActionListener(new AdicionarListener(this));
         jPanel.add(adicionarCadastro, c);
+
+        c.gridx++;
+        JButton voltar = new JButton("Voltar");
+        voltar.addActionListener(new VoltarListener(this));
+        jPanel.add(voltar, c);
     }
 
     public void carregarCadastros(String sql){
@@ -101,7 +99,7 @@ public class Cadastros extends JFrame {
 
             for(Map<String, Object> cadastro: cadastros){
                 JTextField nomeCadastro = new JTextField();
-                c.insets = new Insets(0, 0, 0, 0);
+                c.insets = new Insets(0, 20, 0, 0);
                 c.gridx = 0;
                 c.gridy++;
                 nomeCadastro.setColumns(7);
@@ -109,7 +107,7 @@ public class Cadastros extends JFrame {
                 nomeCadastro.setText(cadastro.get("nome").toString());
                 jPanel.add(nomeCadastro, c);
 
-                c.insets = new Insets(0, 50, 0, 0);
+                c.insets = new Insets(0, 40, 0, 0);
                 c.gridx++;
                 JTextField tipoPermissaoCadastro = new JTextField();
                 tipoPermissaoCadastro.setEnabled(false);

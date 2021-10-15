@@ -40,29 +40,22 @@ public class Grupos extends JFrame {
     private void carregarCabecalho(JPanel jPanel){
         jPanel.setLayout(new GridBagLayout());
 
-        c.insets = new Insets(0, 0, 0, 0);
+        c.insets = new Insets(0, 20, 0, 0);
         c.gridx = 0;
         c.gridy = 0;
         jPanel.add(new JLabel("Nome"), c);
 
-        c.insets = new Insets(0, 50, 0, 0);
+        c.insets = new Insets(0, 40, 0, 0);
         c.gridx++;
         jPanel.add(new JLabel("Líder"), c);
 
-        c.insets = new Insets(-40, 50, 0, 0);
-        c.gridx++;
-        c.gridx++;
-        JButton voltar = new JButton("Voltar");
-        voltar.addActionListener(new VoltarListener(this));
-        jPanel.add(voltar, c);
-
-        c.insets = new Insets(0, 0, 30, 0);
+        c.insets = new Insets(0, 20, 30, 0);
         c.gridx = 0;
         c.gridy++;
         nomeFiltro.setColumns(7);
         jPanel.add(nomeFiltro, c);
 
-        c.insets = new Insets(0, 50, 30, 0);
+        c.insets = new Insets(0, 40, 30, 0);
         c.gridx++;
         liderFiltro.setColumns(7);
         jPanel.add(liderFiltro, c);
@@ -76,6 +69,11 @@ public class Grupos extends JFrame {
         JButton adicionarGrupo = new JButton("Adicionar Grupo");
         adicionarGrupo.addActionListener(new AdicionarListener(this));
         jPanel.add(adicionarGrupo, c);
+
+        c.gridx++;
+        JButton voltar = new JButton("Voltar");
+        voltar.addActionListener(new VoltarListener(this));
+        jPanel.add(voltar, c);
     }
 
     public void carregarGrupos(String sql){
@@ -88,7 +86,7 @@ public class Grupos extends JFrame {
             List<Map<String, Object>> grupos = daoUtil.select(sql, Arrays.asList("id", "nome", "lider"));
 
             for(Map<String, Object> grupo: grupos){
-                c.insets = new Insets(0, 0, 0, 0);
+                c.insets = new Insets(0, 20, 0, 0);
                 c.gridx = 0;
                 c.gridy++;
                 JTextField nomeGrupo = new JTextField();
@@ -97,7 +95,7 @@ public class Grupos extends JFrame {
                 nomeGrupo.setText(grupo.get("nome").toString());
                 jPanel.add(nomeGrupo, c);
 
-                c.insets = new Insets(0, 50, 0, 0);
+                c.insets = new Insets(0, 40, 0, 0);
                 c.gridx++;
                 JTextField nomeLider = new JTextField();
                 nomeLider.setColumns(7);

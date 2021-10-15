@@ -49,12 +49,12 @@ public class Campos extends JFrame {
     private void carregarCabecalho(JPanel jPanel, Integer id){
         jPanel.setLayout(new GridBagLayout());
 
-        c.insets = new Insets(0, 0, 0, 0);
+        c.insets = new Insets(0, 20, 0, 0);
         c.gridx = 0;
         c.gridy = 0;
         jPanel.add(new JLabel("Ordem"), c);
 
-        c.insets = new Insets(0, 50, 0, 0);
+        c.insets = new Insets(0, 40, 0, 0);
         c.gridx++;
         jPanel.add(new JLabel("Label"), c);
 
@@ -64,20 +64,13 @@ public class Campos extends JFrame {
         c.gridx++;
         jPanel.add(new JLabel("Tipo"), c);
 
-        c.insets = new Insets(-40, 50, 0, 0);
-        c.gridx++;
-        c.gridx++;
-        JButton voltar = new JButton("Voltar");
-        voltar.addActionListener(new VoltarListener(this, id));
-        jPanel.add(voltar, c);
-
-        c.insets = new Insets(0, 0, 30, 0);
+        c.insets = new Insets(0, 20, 30, 0);
         c.gridy++;
         c.gridx = 0;
         ordemFiltro.setColumns(7);
         jPanel.add(ordemFiltro, c);
 
-        c.insets = new Insets(0, 50, 30, 0);
+        c.insets = new Insets(0, 40, 30, 0);
         c.gridx++;
         labelFiltro.setColumns(7);
         jPanel.add(labelFiltro, c);
@@ -99,6 +92,11 @@ public class Campos extends JFrame {
         JButton adicionarCampo = new JButton("Adicionar campo");
         adicionarCampo.addActionListener(new AdicionarListener(this, id));
         jPanel.add(adicionarCampo, c);
+
+        c.gridx++;
+        JButton voltar = new JButton("Voltar");
+        voltar.addActionListener(new VoltarListener(this, id));
+        jPanel.add(voltar, c);
     }
 
     public void carregarCampos(String sql){
@@ -111,7 +109,7 @@ public class Campos extends JFrame {
             List<Map<String, Object>> camposList = daoUtil.select(sql, Arrays.asList("id", "idcadastro", "ordem", "label", "coluna", "tipo", "nativo"));
 
             for (Map<String, Object> campo: camposList){
-                c.insets = new Insets(0, 0, 0, 0);
+                c.insets = new Insets(0, 20, 0, 0);
                 c.gridy++;
                 c.gridx = 0;
                 JTextField ordemCampo = new JTextField();
@@ -120,7 +118,7 @@ public class Campos extends JFrame {
                 ordemCampo.setText(campo.get("ordem").toString());
                 jPanel.add(ordemCampo, c);
 
-                c.insets = new Insets(0, 50, 0, 0);
+                c.insets = new Insets(0, 40, 0, 0);
                 c.gridx++;
                 JTextField labelCampo = new JTextField();
                 labelCampo.setColumns(7);

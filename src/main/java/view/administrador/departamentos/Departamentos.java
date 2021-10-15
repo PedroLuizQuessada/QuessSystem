@@ -38,29 +38,22 @@ public class Departamentos extends JFrame {
     private void carregarCabecalho(JPanel jPanel){
         jPanel.setLayout(new GridBagLayout());
 
-        c.insets = new Insets(0, 0, 0, 0);
+        c.insets = new Insets(0, 20, 0, 0);
         c.gridx = 0;
         c.gridy = 0;
         jPanel.add(new JLabel("Nome"), c);
 
-        c.insets = new Insets(0, 50, 0, 0);
+        c.insets = new Insets(0, 40, 0, 0);
         c.gridx++;
         jPanel.add(new JLabel("Gerente"), c);
 
-        c.insets = new Insets(-40, 50, 0, 0);
-        c.gridx++;
-        c.gridx++;
-        JButton voltar = new JButton("Voltar");
-        voltar.addActionListener(new VoltarListener(this));
-        jPanel.add(voltar, c);
-
-        c.insets = new Insets(0, 0, 30, 0);
+        c.insets = new Insets(0, 20, 30, 0);
         c.gridx = 0;
         c.gridy++;
         nomeFiltro.setColumns(7);
         jPanel.add(nomeFiltro, c);
 
-        c.insets = new Insets(0, 50, 30, 0);
+        c.insets = new Insets(0, 40, 30, 0);
         c.gridx++;
         gerenteFiltro.setColumns(7);
         jPanel.add(gerenteFiltro, c);
@@ -74,6 +67,11 @@ public class Departamentos extends JFrame {
         JButton adicionarDepartamento = new JButton("Adicionar Departamento");
         adicionarDepartamento.addActionListener(new AdicionarListener(this));
         jPanel.add(adicionarDepartamento, c);
+
+        c.gridx++;
+        JButton voltar = new JButton("Voltar");
+        voltar.addActionListener(new VoltarListener(this));
+        jPanel.add(voltar, c);
     }
 
     public void carregarDepartamentos(String sql){
@@ -86,7 +84,7 @@ public class Departamentos extends JFrame {
             List<Map<String, Object>> departamentos = daoUtil.select(sql, Arrays.asList("deptoId", "deptoNome", "usuLogin"));
 
             for(Map<String, Object> departamento: departamentos){
-                c.insets = new Insets(0, 0, 0, 0);
+                c.insets = new Insets(0, 20, 0, 0);
                 c.gridx = 0;
                 c.gridy++;
                 JTextField nomeDepartamento = new JTextField();
@@ -95,7 +93,7 @@ public class Departamentos extends JFrame {
                 nomeDepartamento.setText(departamento.get("deptoNome").toString());
                 jPanel.add(nomeDepartamento, c);
 
-                c.insets = new Insets(0, 50, 0, 0);
+                c.insets = new Insets(0, 40, 0, 0);
                 c.gridx++;
                 JTextField nomeGerente = new JTextField();
                 nomeGerente.setColumns(7);

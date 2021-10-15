@@ -26,6 +26,6 @@ public class BuscarListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        janela.carregarTela("SELECT u.id AS id, u.login AS login, u.email AS email, u.tentativasAcesso AS tentativasAcesso, u.adm AS adm, u.gerente AS gerente, u.nativo AS nativo, d.nome AS nomeDepto FROM USUARIOS u INNER JOIN DEPARTAMENTOS d ON u.departamento = d.id WHERE u.login LIKE '%" + login.getText() + "%' AND u.email LIKE '%" + email.getText() + "%' AND u.adm = " + adm.isSelected() + " AND d.nome LIKE '%" + departamento.getText() + "%' AND u.gerente = " + gerente.isSelected() + " ORDER BY u.login");
+        janela.carregarUsuarios("SELECT u.id AS id, u.login AS login, u.email AS email, u.tentativasAcesso AS tentativasAcesso, u.adm AS adm, u.gerente AS gerente, u.nativo AS nativo, d.nome AS nomeDepto FROM USUARIOS u INNER JOIN DEPARTAMENTOS d ON u.departamento = d.id WHERE u.login LIKE '%" + login.getText() + "%' AND u.email LIKE '%" + email.getText() + "%' AND u.adm = " + adm.isSelected() + " AND d.nome LIKE '%" + departamento.getText() + "%' AND u.gerente = " + gerente.isSelected() + " ORDER BY u.login");
     }
 }
