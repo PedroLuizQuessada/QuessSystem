@@ -28,7 +28,10 @@ public class ConfigsUtil {
             daoUtil.insert(String.format("INSERT INTO CONFIGSCAMPOSNUMERICO (valorpadrao, limite, idcampo, cadastro) VALUES (%s, '%s', %d, %s)", numPadrao, limite.getSelectedItem().toString(), idCampo, cadastro));
         }
         else if(tipoCampo.getSelectedItem().toString().equalsIgnoreCase(TipoCampoEnum.DATAHORA.getDescricao())) {
-                daoUtil.insert(String.format("INSERT INTO CONFIGSCAMPOSDATAHORA (valorpadrao, limite, idcampo, cadastro) VALUES ('%s', '%s', %d, %s)", valorPadrao.getText(), limite.getSelectedItem().toString(), idCampo, cadastro));
+            daoUtil.insert(String.format("INSERT INTO CONFIGSCAMPOSDATAHORA (valorpadrao, limite, idcampo, cadastro) VALUES ('%s', '%s', %d, %s)", valorPadrao.getText(), limite.getSelectedItem().toString(), idCampo, cadastro));
+        }
+        else if(tipoCampo.getSelectedItem().toString().equalsIgnoreCase(TipoCampoEnum.DATA.getDescricao())) {
+            daoUtil.insert(String.format("INSERT INTO CONFIGSCAMPOSDATA (valorpadrao, limite, idcampo, cadastro) VALUES ('%s', '%s', %d, %s)", valorPadrao.getText(), limite.getSelectedItem().toString(), idCampo, cadastro));
         }
     }
 
@@ -44,7 +47,10 @@ public class ConfigsUtil {
             daoUtil.update(String.format("UPDATE CONFIGSCAMPOSNUMERICO SET valorpadrao = %s, limite = '%s' WHERE idcampo = %d AND cadastro = %s", numPadrao, limite.getSelectedItem().toString(), idCampo, cadastro));
         }
         else if(tipoCampo.getSelectedItem().toString().equalsIgnoreCase(TipoCampoEnum.DATAHORA.getDescricao())) {
-                daoUtil.update(String.format("UPDATE CONFIGSCAMPOSDATAHORA SET valorpadrao = '%s', limite = '%s' WHERE idcampo = %d AND cadastro = %s", valorPadrao.getText(), limite.getSelectedItem().toString(), idCampo, cadastro));
+            daoUtil.update(String.format("UPDATE CONFIGSCAMPOSDATAHORA SET valorpadrao = '%s', limite = '%s' WHERE idcampo = %d AND cadastro = %s", valorPadrao.getText(), limite.getSelectedItem().toString(), idCampo, cadastro));
+        }
+        else if(tipoCampo.getSelectedItem().toString().equalsIgnoreCase(TipoCampoEnum.DATA.getDescricao())) {
+            daoUtil.update(String.format("UPDATE CONFIGSCAMPOSDATA SET valorpadrao = '%s', limite = '%s' WHERE idcampo = %d AND cadastro = %s", valorPadrao.getText(), limite.getSelectedItem().toString(), idCampo, cadastro));
         }
     }
 

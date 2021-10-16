@@ -139,6 +139,18 @@ public class DaoUtil {
         } catch (SQLException exception){
             //Tabela já criada
         }
+
+        try{
+            stmt.executeUpdate("CREATE TABLE CONFIGSCAMPOSDATA " +
+                    "(id INTEGER NOT NULL IDENTITY, " +
+                    "\nvalorpadrao VARCHAR(30), " +
+                    "\nlimite VARCHAR(30), " +
+                    "\nidcampo INTEGER NOT NULL, " +
+                    "\ncadastro BIT NOT NULL, " +
+                    "\nPRIMARY KEY(id))");
+        } catch (SQLException exception){
+            //Tabela já criada
+        }
     }
 
     public List<Map<String, Object>> select(String sql, List<String> colunas) throws DaoException {

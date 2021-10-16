@@ -4,7 +4,8 @@ public enum TipoCampoEnum {
     PADRAO("Escolha um tipo de campo"),
     TEXTO("Texto"),
     NUMERICO("Numérico"),
-    DATAHORA("Data hora");
+    DATAHORA("Data hora"),
+    DATA("Data");
 
     private final String descricao;
 

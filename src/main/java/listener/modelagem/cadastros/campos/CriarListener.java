@@ -65,6 +65,9 @@ public class CriarListener implements ActionListener {
                 else if (String.valueOf(coluna.get("tipo")).equalsIgnoreCase(TipoCampoEnum.DATAHORA.getDescricao())){
                     sqlCreateTable.append(" TIMESTAMP, ");
                 }
+                else if (String.valueOf(coluna.get("tipo")).equalsIgnoreCase(TipoCampoEnum.DATA.getDescricao())){
+                    sqlCreateTable.append(" DATE, ");
+                }
 
                 sqlInsert.append(coluna.get("coluna").toString()).append(", ");
                 colunasList.add(coluna.get("coluna").toString());

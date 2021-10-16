@@ -4,10 +4,12 @@ import controle.ComboboxUtil;
 import controle.ConfigsUtil;
 import controle.DaoUtil;
 import controle.JFrameUtil;
+import controle.enums.LimiteDataEnum;
 import controle.enums.LimiteDataHoraEnum;
 import controle.enums.LimiteNumericoEnum;
 import controle.enums.TipoCampoEnum;
 import controle.mascaras.DataHoraUtil;
+import controle.mascaras.DataUtil;
 import controle.mascaras.NumericoUtil;
 import exception.DaoException;
 import listener.home.VoltarListener;
@@ -104,6 +106,10 @@ public class AdicionarConsultar extends JFrame {
             insets = new Insets(-350, 0, 0, -800);
             carrregarConfigsDataHora(camposConfigs);
         }
+        else if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.DATA.getDescricao())) {
+            insets = new Insets(-350, 0, 0, -800);
+            carrregarConfigsData(camposConfigs);
+        }
 
         c.insets = new Insets(40, 70, 0, 0);
         c.gridy++;
@@ -124,6 +130,7 @@ public class AdicionarConsultar extends JFrame {
             criarListener = new CriarListener(this, idCadastro, idCampo, configsUtil);
             jButton.addActionListener(criarListener);
         } else {
+            ordem.removeAllItems();
             comboboxUtil.carregarOrdem(idCadastro, ordem, false);
             carregarInfosCampo(idCampo);
             coluna.setEnabled(false);
@@ -216,6 +223,38 @@ public class AdicionarConsultar extends JFrame {
         add(configsUtil.getValorPadrao(), c);
     }
 
+    private void carrregarConfigsData(List<JComponent> camposConfigs){
+        c.insets = new Insets(40, 70, 0, 0);
+        c.gridy++;
+        c.gridx = 1;
+        JLabel limiteLabel = new JLabel("Limite da data");
+        camposConfigs.add(limiteLabel);
+        add(limiteLabel, c);
+
+        c.gridx = 3;
+        JLabel valorPadraoLabel = new JLabel("Valor padrão");
+        camposConfigs.add(valorPadraoLabel);
+        add(valorPadraoLabel, c);
+
+        c.insets = new Insets(0, 70, 0, 0);
+        c.gridy++;
+        c.gridx = 1;
+        configsUtil.setLimite(new JComboBox<>());
+        camposConfigs.add(configsUtil.getLimite());
+        for(LimiteDataEnum limiteDataEnum: LimiteDataEnum.values()){
+            configsUtil.getLimite().addItem(limiteDataEnum.getDescricao());
+        }
+        configsUtil.getLimite().setSelectedItem(LimiteDataHoraEnum.PADRAO.getDescricao());
+        add(configsUtil.getLimite(), c);
+
+        c.gridx = 3;
+        configsUtil.setValorPadrao(new JTextField());
+        camposConfigs.add(configsUtil.getValorPadrao());
+        configsUtil.getValorPadrao().addKeyListener(new DataUtil(configsUtil.getValorPadrao()));
+        configsUtil.getValorPadrao().setColumns(7);
+        add(configsUtil.getValorPadrao(), c);
+    }
+
     private void carregarInfosCampo(Integer idCampo) throws DaoException{
         List<Map<String, Object>> infosConfigsList;
         List<Map<String, Object>> infosCampoList = daoUtil.select(String.format("SELECT ordem, label, coluna, tipo, nativo FROM CAMPOSCADASTROS WHERE id = %d", idCampo), Arrays.asList("ordem", "label", "coluna", "tipo", "nativo"));
@@ -253,6 +292,21 @@ public class AdicionarConsultar extends JFrame {
         }
         else if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.DATAHORA.getDescricao())) {
             infosConfigsList = daoUtil.select(String.format("SELECT * FROM CONFIGSCAMPOSDATAHORA WHERE idcampo = %d AND cadastro = true", idCampo), Arrays.asList("valorpadrao", "limite"));
+
+            if (infosConfigsList.get(0).get("valorpadrao") != null) {
+                configsUtil.getValorPadrao().setText(infosConfigsList.get(0).get("valorpadrao").toString());
+            }
+            if (infosConfigsList.get(0).get("limite") != null) {
+                configsUtil.getLimite().setSelectedItem(infosConfigsList.get(0).get("limite").toString());
+            }
+
+            if (infosCampoList.get(0).get("nativo") != null) {
+                configsUtil.getValorPadrao().setEnabled(false);
+                configsUtil.getLimite().setEnabled(false);
+            }
+        }
+        else if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.DATA.getDescricao())) {
+            infosConfigsList = daoUtil.select(String.format("SELECT * FROM CONFIGSCAMPOSDATA WHERE idcampo = %d AND cadastro = true", idCampo), Arrays.asList("valorpadrao", "limite"));
 
             if (infosConfigsList.get(0).get("valorpadrao") != null) {
                 configsUtil.getValorPadrao().setText(infosConfigsList.get(0).get("valorpadrao").toString());
