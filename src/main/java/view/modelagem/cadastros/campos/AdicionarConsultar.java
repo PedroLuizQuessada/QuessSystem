@@ -110,6 +110,10 @@ public class AdicionarConsultar extends JFrame {
             insets = new Insets(-350, 0, 0, -800);
             carrregarConfigsData(camposConfigs);
         }
+        else if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.CHECKBOX.getDescricao())) {
+            insets = new Insets(-350, 0, 0, -800);
+            carrregarConfigsCheckbox(camposConfigs);
+        }
 
         c.insets = new Insets(40, 70, 0, 0);
         c.gridy++;
@@ -121,6 +125,7 @@ public class AdicionarConsultar extends JFrame {
         c.insets = insets;
         add(voltar, c);
         camposConfigs.add(voltar);
+        ordem.removeAllItems();
 
         if (idCampo == null) {
             comboboxUtil.carregarOrdem(idCadastro, ordem, true);
@@ -130,7 +135,6 @@ public class AdicionarConsultar extends JFrame {
             criarListener = new CriarListener(this, idCadastro, idCampo, configsUtil);
             jButton.addActionListener(criarListener);
         } else {
-            ordem.removeAllItems();
             comboboxUtil.carregarOrdem(idCadastro, ordem, false);
             carregarInfosCampo(idCampo);
             coluna.setEnabled(false);
@@ -255,6 +259,21 @@ public class AdicionarConsultar extends JFrame {
         add(configsUtil.getValorPadrao(), c);
     }
 
+    private void carrregarConfigsCheckbox(List<JComponent> camposConfigs){
+        c.insets = new Insets(40, 70, 0, 0);
+        c.gridy++;
+        c.gridx = 2;
+        JLabel valorPadraoLabel = new JLabel("Estado padrão");
+        camposConfigs.add(valorPadraoLabel);
+        add(valorPadraoLabel, c);
+
+        c.insets = new Insets(0, 70, 0, 0);
+        c.gridy++;
+        configsUtil.setEstadoPadrao(new JCheckBox());
+        camposConfigs.add(configsUtil.getEstadoPadrao());
+        add(configsUtil.getEstadoPadrao(), c);
+    }
+
     private void carregarInfosCampo(Integer idCampo) throws DaoException{
         List<Map<String, Object>> infosConfigsList;
         List<Map<String, Object>> infosCampoList = daoUtil.select(String.format("SELECT ordem, label, coluna, tipo, nativo FROM CAMPOSCADASTROS WHERE id = %d", idCampo), Arrays.asList("ordem", "label", "coluna", "tipo", "nativo"));
@@ -318,6 +337,17 @@ public class AdicionarConsultar extends JFrame {
             if (infosCampoList.get(0).get("nativo") != null) {
                 configsUtil.getValorPadrao().setEnabled(false);
                 configsUtil.getLimite().setEnabled(false);
+            }
+        }
+        else if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.CHECKBOX.getDescricao())) {
+            infosConfigsList = daoUtil.select(String.format("SELECT * FROM CONFIGSCAMPOSCHECKBOX WHERE idcampo = %d AND cadastro = true", idCampo), Collections.singletonList("estadopadrao"));
+
+            if (infosConfigsList.get(0).get("estadopadrao") != null && infosConfigsList.get(0).get("estadopadrao").toString().equalsIgnoreCase("true")) {
+                configsUtil.getEstadoPadrao().setSelected(true);
+            }
+
+            if (infosCampoList.get(0).get("nativo") != null) {
+                configsUtil.getEstadoPadrao().setEnabled(false);
             }
         }
     }

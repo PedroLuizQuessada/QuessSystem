@@ -42,7 +42,7 @@ public class CriarListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         try{
-            campoUtil.validarCampo(idCadastro, idCampo, label, coluna.getText(), tipo);
+            campoUtil.validarCampo(idCadastro, idCampo, label, coluna.getText(), tipo, configsUtil);
 
             List<Map<String, Object>> tabelaCadastroList = daoUtil.select(String.format("SELECT tabela FROM CADASTROS WHERE id = %d", idCadastro), Collections.singletonList("tabela"));
             String tabelaCadastro = tabelaCadastroList.get(0).get("tabela").toString();
@@ -67,6 +67,9 @@ public class CriarListener implements ActionListener {
                 }
                 else if (String.valueOf(coluna.get("tipo")).equalsIgnoreCase(TipoCampoEnum.DATA.getDescricao())){
                     sqlCreateTable.append(" DATE, ");
+                }
+                else if (String.valueOf(coluna.get("tipo")).equalsIgnoreCase(TipoCampoEnum.CHECKBOX.getDescricao())){
+                    sqlCreateTable.append(" BIT, ");
                 }
 
                 sqlInsert.append(coluna.get("coluna").toString()).append(", ");

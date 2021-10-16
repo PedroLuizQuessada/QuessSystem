@@ -40,7 +40,7 @@ public class AlterarListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            campoUtil.validarCampo(idCadastro, idCampo, label, null, null);
+            campoUtil.validarCampo(idCadastro, idCampo, label, null, janela.getTipo(), configsUtil);
 
             List<Map<String, Object>> ordemInicialList = daoUtil.select(String.format("SELECT ordem FROM CAMPOSCADASTROS WHERE id = %d", idCampo), Collections.singletonList("ordem"));
             int ordemInicial = Integer.parseInt(ordemInicialList.get(0).get("ordem").toString());

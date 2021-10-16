@@ -11,6 +11,7 @@ public class ConfigsUtil {
     private final JComboBox<String> tipoCampo;
     private JTextField valorPadrao = null;
     private JComboBox<String> limite = null;
+    private JCheckBox estadoPadrao = null;
 
     public ConfigsUtil(JComboBox<String> tipoCampo) {
         this.tipoCampo = tipoCampo;
@@ -33,6 +34,9 @@ public class ConfigsUtil {
         else if(tipoCampo.getSelectedItem().toString().equalsIgnoreCase(TipoCampoEnum.DATA.getDescricao())) {
             daoUtil.insert(String.format("INSERT INTO CONFIGSCAMPOSDATA (valorpadrao, limite, idcampo, cadastro) VALUES ('%s', '%s', %d, %s)", valorPadrao.getText(), limite.getSelectedItem().toString(), idCampo, cadastro));
         }
+        else if(tipoCampo.getSelectedItem().toString().equalsIgnoreCase(TipoCampoEnum.CHECKBOX.getDescricao())) {
+            daoUtil.insert(String.format("INSERT INTO CONFIGSCAMPOSCHECKBOX (estadopadrao, idcampo, cadastro) VALUES (%s, %d, %s)", estadoPadrao.isSelected(), idCampo, cadastro));
+        }
     }
 
     public void alterarConfigs(int idCampo, boolean cadastro) throws DaoException {
@@ -52,6 +56,9 @@ public class ConfigsUtil {
         else if(tipoCampo.getSelectedItem().toString().equalsIgnoreCase(TipoCampoEnum.DATA.getDescricao())) {
             daoUtil.update(String.format("UPDATE CONFIGSCAMPOSDATA SET valorpadrao = '%s', limite = '%s' WHERE idcampo = %d AND cadastro = %s", valorPadrao.getText(), limite.getSelectedItem().toString(), idCampo, cadastro));
         }
+        else if(tipoCampo.getSelectedItem().toString().equalsIgnoreCase(TipoCampoEnum.CHECKBOX.getDescricao())) {
+            daoUtil.update(String.format("UPDATE CONFIGSCAMPOSCHECKBOX SET estadopadrao = %s WHERE idcampo = %d AND cadastro = %s", estadoPadrao.isSelected(), idCampo, cadastro));
+        }
     }
 
     public JTextField getValorPadrao() {
@@ -68,5 +75,13 @@ public class ConfigsUtil {
 
     public void setLimite(JComboBox<String> limite) {
         this.limite = limite;
+    }
+
+    public JCheckBox getEstadoPadrao() {
+        return estadoPadrao;
+    }
+
+    public void setEstadoPadrao(JCheckBox estadoPadrao) {
+        this.estadoPadrao = estadoPadrao;
     }
 }

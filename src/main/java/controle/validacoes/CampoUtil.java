@@ -1,5 +1,6 @@
 package controle.validacoes;
 
+import controle.ConfigsUtil;
 import controle.DaoUtil;
 import controle.enums.TipoCampoEnum;
 import exception.DaoException;
@@ -13,7 +14,7 @@ import java.util.Map;
 public class CampoUtil {
     private final DaoUtil daoUtil = new DaoUtil();
 
-    public void validarCampo(Integer idCadastro, Integer idCampo, JTextField label, String coluna, JComboBox<String> tipo) throws CampoException, DaoException {
+    public void validarCampo(Integer idCadastro, Integer idCampo, JTextField label, String coluna, JComboBox<String> tipo, ConfigsUtil configsUtil) throws CampoException, DaoException {
         if(label.getText().length() < 1 || (coluna != null && coluna.length() < 1)){
             throw new CampoException("O campo deve ter um label e um nome para coluna");
         }
@@ -25,6 +26,18 @@ public class CampoUtil {
         List<Map<String, Object>> campos = daoUtil.select(String.format("SELECT COUNT(id) AS total FROM CAMPOSCADASTROS WHERE idcadastro = %d AND (label = '%s' OR coluna = '%s') AND id <> %d", idCadastro, label.getText(), coluna, idCampo), Collections.singletonList("total"));
         if(Integer.parseInt(campos.get(0).get("total").toString()) > 0){
             throw new CampoException("O label e o nome da coluna do campo devem ser únicos");
+        }
+
+        if(tipo != null && tipo.getSelectedItem().toString().equalsIgnoreCase(TipoCampoEnum.DATAHORA.getDescricao())){
+            if(configsUtil.getValorPadrao().getText().length() < 16 && configsUtil.getValorPadrao().getText().length() > 0){
+                throw new CampoException("Data hora padrão inválida");
+            }
+        }
+
+        if(tipo != null && tipo.getSelectedItem().toString().equalsIgnoreCase(TipoCampoEnum.DATA.getDescricao())){
+            if(configsUtil.getValorPadrao().getText().length() < 10 && configsUtil.getValorPadrao().getText().length() > 0){
+                throw new CampoException("Data padrão inválida");
+            }
         }
     }
 }
