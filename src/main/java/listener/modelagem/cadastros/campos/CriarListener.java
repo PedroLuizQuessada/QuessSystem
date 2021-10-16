@@ -71,6 +71,9 @@ public class CriarListener implements ActionListener {
                 else if (String.valueOf(coluna.get("tipo")).equalsIgnoreCase(TipoCampoEnum.CHECKBOX.getDescricao())){
                     sqlCreateTable.append(" BIT, ");
                 }
+                else if (String.valueOf(coluna.get("tipo")).equalsIgnoreCase(TipoCampoEnum.AREATEXTO.getDescricao())){
+                    sqlCreateTable.append(" VARCHAR(500), ");
+                }
 
                 sqlInsert.append(coluna.get("coluna").toString()).append(", ");
                 colunasList.add(coluna.get("coluna").toString());

@@ -6,7 +6,8 @@ public enum TipoCampoEnum {
     NUMERICO("Numérico"),
     DATAHORA("Data hora"),
     DATA("Data"),
-    CHECKBOX("Checkbox");
+    CHECKBOX("Checkbox"),
+    AREATEXTO("Área de texto");
 
     private final String descricao;
 

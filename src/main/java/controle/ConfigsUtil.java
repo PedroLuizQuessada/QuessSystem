@@ -12,6 +12,8 @@ public class ConfigsUtil {
     private JTextField valorPadrao = null;
     private JComboBox<String> limite = null;
     private JCheckBox estadoPadrao = null;
+    private JTextArea valorPadraoArea = null;
+    private JTextField limiteCaracteres = null;
 
     public ConfigsUtil(JComboBox<String> tipoCampo) {
         this.tipoCampo = tipoCampo;
@@ -37,6 +39,13 @@ public class ConfigsUtil {
         else if(tipoCampo.getSelectedItem().toString().equalsIgnoreCase(TipoCampoEnum.CHECKBOX.getDescricao())) {
             daoUtil.insert(String.format("INSERT INTO CONFIGSCAMPOSCHECKBOX (estadopadrao, idcampo, cadastro) VALUES (%s, %d, %s)", estadoPadrao.isSelected(), idCampo, cadastro));
         }
+        else if(tipoCampo.getSelectedItem().toString().equalsIgnoreCase(TipoCampoEnum.AREATEXTO.getDescricao())) {
+            String limiteCaracteresTexto = limiteCaracteres.getText();
+            if (limiteCaracteresTexto.length() == 0) {
+                limiteCaracteresTexto = "null";
+            }
+            daoUtil.insert(String.format("INSERT INTO CONFIGSCAMPOSAREATEXTO (valorpadrao, limitecaracteres, idcampo, cadastro) VALUES ('%s', %s, %d, %s)", valorPadraoArea.getText(), limiteCaracteresTexto, idCampo, cadastro));
+        }
     }
 
     public void alterarConfigs(int idCampo, boolean cadastro) throws DaoException {
@@ -58,6 +67,9 @@ public class ConfigsUtil {
         }
         else if(tipoCampo.getSelectedItem().toString().equalsIgnoreCase(TipoCampoEnum.CHECKBOX.getDescricao())) {
             daoUtil.update(String.format("UPDATE CONFIGSCAMPOSCHECKBOX SET estadopadrao = %s WHERE idcampo = %d AND cadastro = %s", estadoPadrao.isSelected(), idCampo, cadastro));
+        }
+        else if(tipoCampo.getSelectedItem().toString().equalsIgnoreCase(TipoCampoEnum.AREATEXTO.getDescricao())) {
+            daoUtil.update(String.format("UPDATE CONFIGSCAMPOSAREATEXTO SET valorpadrao = '%s', limitecaracteres = %s WHERE idcampo = %d AND cadastro = %s", valorPadraoArea.getText(), limiteCaracteres.getText(), idCampo, cadastro));
         }
     }
 
@@ -83,5 +95,21 @@ public class ConfigsUtil {
 
     public void setEstadoPadrao(JCheckBox estadoPadrao) {
         this.estadoPadrao = estadoPadrao;
+    }
+
+    public JTextArea getValorPadraoArea() {
+        return valorPadraoArea;
+    }
+
+    public void setValorPadraoArea(JTextArea valorPadraoArea) {
+        this.valorPadraoArea = valorPadraoArea;
+    }
+
+    public JTextField getLimiteCaracteres() {
+        return limiteCaracteres;
+    }
+
+    public void setLimiteCaracteres(JTextField limiteCaracteres) {
+        this.limiteCaracteres = limiteCaracteres;
     }
 }

@@ -1,9 +1,6 @@
 package view.modelagem.cadastros.campos;
 
-import controle.ComboboxUtil;
-import controle.ConfigsUtil;
-import controle.DaoUtil;
-import controle.JFrameUtil;
+import controle.*;
 import controle.enums.LimiteDataEnum;
 import controle.enums.LimiteDataHoraEnum;
 import controle.enums.LimiteNumericoEnum;
@@ -26,6 +23,7 @@ import java.util.List;
 public class AdicionarConsultar extends JFrame {
     private final DaoUtil daoUtil = new DaoUtil();
     private final ComboboxUtil comboboxUtil = new ComboboxUtil();
+    private final TextAreaUtil textAreaUtil = new TextAreaUtil();
     private final JFrameUtil jFrameUtil = new JFrameUtil();
 
     private final JComboBox<String> ordem = new JComboBox<>();
@@ -111,8 +109,12 @@ public class AdicionarConsultar extends JFrame {
             carrregarConfigsData(camposConfigs);
         }
         else if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.CHECKBOX.getDescricao())) {
-            insets = new Insets(-350, 0, 0, -800);
+            insets = new Insets(-345, 0, 0, -800);
             carrregarConfigsCheckbox(camposConfigs);
+        }
+        else if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.AREATEXTO.getDescricao())) {
+            insets = new Insets(-390, 0, 0, -950);
+            carrregarConfigsAreaTexto(camposConfigs);
         }
 
         c.insets = new Insets(40, 70, 0, 0);
@@ -274,6 +276,36 @@ public class AdicionarConsultar extends JFrame {
         add(configsUtil.getEstadoPadrao(), c);
     }
 
+    private void carrregarConfigsAreaTexto(List<JComponent> camposConfigs){
+        c.insets = new Insets(40, 70, 0, 0);
+        c.gridy++;
+        c.gridx = 1;
+        JLabel limiteCaracteresLabel = new JLabel("Limite de caracteres");
+        camposConfigs.add(limiteCaracteresLabel);
+        add(limiteCaracteresLabel, c);
+
+        c.gridx = 3;
+        JLabel valorPadraoLabel = new JLabel("Valor padrão");
+        camposConfigs.add(valorPadraoLabel);
+        add(valorPadraoLabel, c);
+
+        c.insets = new Insets(-45, 70, 0, 0);
+        c.gridy++;
+        c.gridx = 1;
+        configsUtil.setLimiteCaracteres(new JTextField());
+        configsUtil.getLimiteCaracteres().addKeyListener(new NumericoUtil(configsUtil.getLimiteCaracteres()));
+        configsUtil.getLimiteCaracteres().setColumns(7);
+        camposConfigs.add(configsUtil.getLimiteCaracteres());
+        add(configsUtil.getLimiteCaracteres(), c);
+
+        c.insets = new Insets(0, 70, 0, 0);
+        c.gridx = 3;
+        configsUtil.setValorPadraoArea(new JTextArea());
+        camposConfigs.add(configsUtil.getValorPadraoArea());
+        textAreaUtil.configurarTextArea(configsUtil.getValorPadraoArea());
+        add(configsUtil.getValorPadraoArea(), c);
+    }
+
     private void carregarInfosCampo(Integer idCampo) throws DaoException{
         List<Map<String, Object>> infosConfigsList;
         List<Map<String, Object>> infosCampoList = daoUtil.select(String.format("SELECT ordem, label, coluna, tipo, nativo FROM CAMPOSCADASTROS WHERE id = %d", idCampo), Arrays.asList("ordem", "label", "coluna", "tipo", "nativo"));
@@ -348,6 +380,22 @@ public class AdicionarConsultar extends JFrame {
 
             if (infosCampoList.get(0).get("nativo") != null) {
                 configsUtil.getEstadoPadrao().setEnabled(false);
+            }
+        }
+        else if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.AREATEXTO.getDescricao())) {
+            infosConfigsList = daoUtil.select(String.format("SELECT * FROM CONFIGSCAMPOSAREATEXTO WHERE idcampo = %d AND cadastro = true", idCampo), Arrays.asList("valorpadrao", "limitecaracteres"));
+
+            if (infosConfigsList.get(0).get("valorpadrao") != null) {
+                configsUtil.getValorPadraoArea().setText(infosConfigsList.get(0).get("valorpadrao").toString());
+            }
+
+            if (infosConfigsList.get(0).get("limitecaracteres") != null) {
+                configsUtil.getLimiteCaracteres().setText(infosConfigsList.get(0).get("limitecaracteres").toString());
+            }
+
+            if (infosCampoList.get(0).get("nativo") != null) {
+                configsUtil.getValorPadraoArea().setEnabled(false);
+                configsUtil.getLimiteCaracteres().setEnabled(false);
             }
         }
     }
