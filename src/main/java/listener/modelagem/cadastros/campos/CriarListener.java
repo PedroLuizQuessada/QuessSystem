@@ -2,6 +2,7 @@ package listener.modelagem.cadastros.campos;
 
 import controle.ConfigsUtil;
 import controle.DaoUtil;
+import controle.enums.OpcaoComboEnum;
 import controle.enums.TipoCampoEnum;
 import controle.validacoes.CampoUtil;
 import exception.DaoException;
@@ -54,6 +55,10 @@ public class CriarListener implements ActionListener {
 
             List<Map<String, Object>> colunas = daoUtil.select(String.format("SELECT coluna, tipo FROM CAMPOSCADASTROS WHERE idcadastro = %d", idCadastro), Arrays.asList("coluna", "tipo"));
             for(Map<String, Object> coluna: colunas){
+                if (String.valueOf(coluna.get("tipo")).equalsIgnoreCase(TipoCampoEnum.AGRUPADOR.getDescricao())){
+                    break;
+                }
+
                 sqlCreateTable.append(coluna.get("coluna"));
 
                 if(String.valueOf(coluna.get("tipo")).equalsIgnoreCase(TipoCampoEnum.TEXTO.getDescricao())) {
@@ -74,6 +79,12 @@ public class CriarListener implements ActionListener {
                 else if (String.valueOf(coluna.get("tipo")).equalsIgnoreCase(TipoCampoEnum.AREATEXTO.getDescricao())){
                     sqlCreateTable.append(" VARCHAR(500), ");
                 }
+                else if (String.valueOf(coluna.get("tipo")).equalsIgnoreCase(TipoCampoEnum.COMBOBOX.getDescricao())){
+                    sqlCreateTable.append(" VARCHAR(30), ");
+                }
+                else if (String.valueOf(coluna.get("tipo")).equalsIgnoreCase(TipoCampoEnum.RADIO.getDescricao())){
+                    sqlCreateTable.append(" VARCHAR(30), ");
+                }
 
                 sqlInsert.append(coluna.get("coluna").toString()).append(", ");
                 colunasList.add(coluna.get("coluna").toString());
@@ -86,24 +97,32 @@ public class CriarListener implements ActionListener {
             daoUtil.drop(String.format("DROP TABLE %s", tabelaCadastro));
             daoUtil.create(sqlCreateTable.toString());
 
-            for(Map<String, Object> infoTabela: infosTabela){
+            for(Map<String, Object> infoTabela: infosTabela) {
                 StringBuilder sqlInsertLinha = new StringBuilder(sqlInsert.toString());
-                for(Map<String, Object> coluna: colunas){
-                    String info = infoTabela.get(coluna).toString();
-                    if(!coluna.get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.NUMERICO.getDescricao())){
-                        info = "'" + infoTabela.get(coluna) + "'";
+                for (Map<String, Object> coluna : colunas) {
+                    if (!coluna.get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.AGRUPADOR.getDescricao())) {
+                        String info = infoTabela.get(coluna).toString();
+                        if (!coluna.get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.NUMERICO.getDescricao())) {
+                            info = "'" + infoTabela.get(coluna) + "'";
+                        }
+                        sqlInsertLinha.append(info).append(", ");
                     }
-                    sqlInsertLinha.append(info).append(", ");
                 }
                 sqlInsertLinha = new StringBuilder(sqlInsertLinha.substring(0, sqlInsertLinha.length() - 3));
                 daoUtil.insert(sqlInsertLinha + ")");
             }
 
-            daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET ordem = ordem + 1 WHERE ordem >= %d", Integer.parseInt(ordem.getSelectedItem().toString())));
-            daoUtil.insert(String.format("INSERT INTO CAMPOSCADASTROS (idcadastro, ordem, label, coluna, tipo, vinculado, bloqueado, obrigatorio) VALUES (%d, %d, '%s', '%s', '%s', false, false, false)", idCadastro, Integer.parseInt(ordem.getSelectedItem().toString()), label.getText(), coluna.getText(), tipo.getSelectedItem()));
+            Integer idAgr = null;
+            if(configsUtil.getAgrupador() != null && !configsUtil.getAgrupador().getSelectedItem().toString().equals(OpcaoComboEnum.SEM_AGRUPADOR.getDescricao())){
+                List<Map<String, Object>> idAgrList = daoUtil.select(String.format("SELECT id FROM CAMPOSCADASTROS WHERE label = '%s' AND idcadastro = %d", configsUtil.getAgrupador().getSelectedItem(), idCadastro), Collections.singletonList("id"));
+                idAgr = Integer.parseInt(idAgrList.get(0).toString());
+            }
 
-            List<Map<String, Object>> idCampoList = daoUtil.select("SELECT MAX(id) AS idCampo FROM CAMPOSCADASTROS", Collections.singletonList("idCampo"));
-            configsUtil.salvarConfigs(Integer.parseInt(idCampoList.get(0).get("idCampo").toString()), true);
+            daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET ordem = ordem + 1 WHERE ordem >= %d", Integer.parseInt(ordem.getSelectedItem().toString())));
+            daoUtil.insert(String.format("INSERT INTO CAMPOSCADASTROS (idcadastro, ordem, label, coluna, tipo, vinculado, bloqueado, obrigatorio, agrupador) VALUES (%d, %d, '%s', '%s', '%s', false, false, false, %d)", idCadastro, Integer.parseInt(ordem.getSelectedItem().toString()), label.getText(), coluna.getText(), tipo.getSelectedItem(), idAgr));
+
+            List<Map<String, Object>> idCampoList = daoUtil.select("SELECT MAX(id) AS id FROM CAMPOSCADASTROS", Collections.singletonList("id"));
+            configsUtil.salvarConfigs(Integer.parseInt(idCampoList.get(0).get("id").toString()), true);
 
             janela.dispose();
             Main.getJanelas().add(new Campos(idCadastro));

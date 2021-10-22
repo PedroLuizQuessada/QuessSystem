@@ -51,26 +51,25 @@ public class CriarListener implements ActionListener {
             int cadastroId = Integer.parseInt(cadastroIdList.get(0).get("id").toString());
 
             daoUtil.insert(String.format("INSERT INTO CAMPOSCADASTROS (idcadastro, ordem, label, coluna, tipo, vinculado, bloqueado, obrigatorio, nativo) VALUES (%d, 1, 'ID', 'id', 'Numérico', false, false, false, true)", cadastroId));
-            daoUtil.insert("INSERT INTO CONFIGSCAMPOSNUMERICO (idcampo, cadastro) VALUES (0, true)");
-
             daoUtil.insert(String.format("INSERT INTO CAMPOSCADASTROS (idcadastro, ordem, label, coluna, tipo, vinculado, bloqueado, obrigatorio, nativo) VALUES (%d, 2, 'Registrado em', 'registrado_em', 'Data hora', false, false, false, true)", cadastroId));
-            daoUtil.insert("INSERT INTO CONFIGSCAMPOSDATAHORA (idcampo, cadastro) VALUES (1, true)");
-
             daoUtil.insert(String.format("INSERT INTO CAMPOSCADASTROS (idcadastro, ordem, label, coluna, tipo, vinculado, bloqueado, obrigatorio, nativo) VALUES (%d, 3, 'Registrado por', 'registrado_por', 'Numérico', false, false, false, true)", cadastroId));
-            daoUtil.insert("INSERT INTO CONFIGSCAMPOSNUMERICO (idcampo, cadastro) VALUES (2, true)");
-
             daoUtil.insert(String.format("INSERT INTO CAMPOSCADASTROS (idcadastro, ordem, label, coluna, tipo, vinculado, bloqueado, obrigatorio, nativo) VALUES (%d, 4, 'Última atualização', 'ultima_atualizacao', 'Data hora', false, false, false, true)", cadastroId));
-            daoUtil.insert("INSERT INTO CONFIGSCAMPOSDATAHORA (idcampo, cadastro) VALUES (3, true)");
-
             daoUtil.insert(String.format("INSERT INTO CAMPOSCADASTROS (idcadastro, ordem, label, coluna, tipo, vinculado, bloqueado, obrigatorio, nativo) VALUES (%d, 5, 'Atualizado por', 'atualizado_por', 'Numérico', false, false, false, true)", cadastroId));
-            daoUtil.insert("INSERT INTO CONFIGSCAMPOSNUMERICO (idcampo, cadastro) VALUES (4, true)");
+
+            List<Map<String, Object>> campoIdList = daoUtil.select("SELECT MAX(id) as id FROM CAMPOSCADASTROS", Collections.singletonList("id"));
+            Integer campoId = Integer.parseInt(campoIdList.get(0).get("id").toString());
+
+            daoUtil.insert(String.format("INSERT INTO CONFIGSCAMPOSNUMERICO (idcampo, cadastro) VALUES (%d, true)", campoId - 4));
+            daoUtil.insert(String.format("INSERT INTO CONFIGSCAMPOSDATAHORA (idcampo, cadastro) VALUES (%d, true)", campoId - 3));
+            daoUtil.insert(String.format("INSERT INTO CONFIGSCAMPOSNUMERICO (idcampo, cadastro) VALUES (%d, true)", campoId - 2));
+            daoUtil.insert(String.format("INSERT INTO CONFIGSCAMPOSDATAHORA (idcampo, cadastro) VALUES (%d, true)", campoId - 1));
+            daoUtil.insert(String.format("INSERT INTO CONFIGSCAMPOSNUMERICO (idcampo, cadastro) VALUES (%d, true)", campoId));
 
             janela.dispose();
             Main.getJanelas().add(new AdicionarConsultar(cadastroId));
             JOptionPane.showMessageDialog(null, "Cadastro adicionado", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         }
         catch (CadastroException | DaoException exception){
-            exception.printStackTrace();
             JOptionPane.showMessageDialog(janela, exception.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }

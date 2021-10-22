@@ -100,6 +100,8 @@ public class DaoUtil {
                     "\nobrigatorio BIT NOT NULL, " +
                     "\nnativo BIT, " +
                     "\ninativo BIT, " +
+                    "\nagrupador INTEGER, " +
+                    "\nordemagrupador INTEGER, " +
                     "\nPRIMARY KEY(id))");
         } catch (SQLException exception){
             //Tabela já criada
@@ -174,6 +176,42 @@ public class DaoUtil {
         } catch (SQLException exception){
             //Tabela já criada
         }
+
+        try{
+            stmt.executeUpdate("CREATE TABLE CONFIGSCAMPOSCOMBOBOX " +
+                    "(id INTEGER NOT NULL IDENTITY, " +
+                    "\nopcaopadrao VARCHAR(30), " +
+                    "\nopcoes VARCHAR(500), " +
+                    "\nidcampo INTEGER NOT NULL, " +
+                    "\ncadastro BIT NOT NULL, " +
+                    "\nPRIMARY KEY(id))");
+        } catch (SQLException exception){
+            //Tabela já criada
+        }
+
+        try{
+            stmt.executeUpdate("CREATE TABLE CONFIGSCAMPOSRADIO " +
+                    "(id INTEGER NOT NULL IDENTITY, " +
+                    "\nopcaopadrao VARCHAR(30), " +
+                    "\nopcoes VARCHAR(500), " +
+                    "\nidcampo INTEGER NOT NULL, " +
+                    "\ncadastro BIT NOT NULL, " +
+                    "\nPRIMARY KEY(id))");
+        } catch (SQLException exception){
+            //Tabela já criada
+        }
+
+        try{
+            stmt.executeUpdate("CREATE TABLE CONFIGSCAMPOSAGRUPADOR " +
+                    "(id INTEGER NOT NULL IDENTITY, " +
+                    "\nordenacaodesc BIT NOT NULL, " +
+                    "\nordenacaocampo VARCHAR(30), " +
+                    "\nidcampo INTEGER NOT NULL, " +
+                    "\ncadastro BIT NOT NULL, " +
+                    "\nPRIMARY KEY(id))");
+        } catch (SQLException exception){
+            //Tabela já criada
+        }
     }
 
     public List<Map<String, Object>> select(String sql, List<String> colunas) throws DaoException {
@@ -192,6 +230,7 @@ public class DaoUtil {
             return listMapRetorno;
         }
         catch (Exception exception){
+            exception.printStackTrace();
             throw new DaoException();
         }
     }
@@ -217,6 +256,7 @@ public class DaoUtil {
             con.createStatement().executeUpdate(sql);
         }
         catch (Exception exception){
+            exception.printStackTrace();
             throw new DaoException();
         }
     }

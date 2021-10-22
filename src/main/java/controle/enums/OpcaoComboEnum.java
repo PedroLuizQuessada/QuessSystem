@@ -7,7 +7,10 @@ public enum OpcaoComboEnum {
     PERMITIDOS("Escolha os permitidos"),
     CAMPO("Escolha um tipo de campo"),
     SEM_GERENTE("Sem gerente"),
-    SEM_LIDER("Sem líder");
+    SEM_LIDER("Sem líder"),
+    OPCAO_COMBO_RADIO("Escolha uma opção"),
+    SEM_OPCAO_PADRAO("Sem opção padrão"),
+    SEM_AGRUPADOR("Sem agrupador");
 
     private final String descricao;
 

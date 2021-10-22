@@ -7,7 +7,10 @@ public enum TipoCampoEnum {
     DATAHORA("Data hora"),
     DATA("Data"),
     CHECKBOX("Checkbox"),
-    AREATEXTO("Área de texto");
+    AREATEXTO("Área de texto"),
+    COMBOBOX("Combobox"),
+    RADIO("Rádio"),
+    AGRUPADOR("Agrupador");
 
     private final String descricao;
 
