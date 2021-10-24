@@ -118,11 +118,11 @@ public class CriarListener implements ActionListener {
                 Integer ordemAgr = Integer.parseInt(agrList.get(0).get("ordem").toString());
 
                 daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET ordemagrupador = ordemagrupador + 1 WHERE ordemagrupador >= %d AND agrupador = %d", Integer.parseInt(ordem.getSelectedItem().toString()), idAgr));
-                daoUtil.insert(String.format("INSERT INTO CAMPOSCADASTROS (idcadastro, ordem, ordemagrupador, label, coluna, tipo, vinculado, bloqueado, obrigatorio, agrupador) VALUES (%d, %d, %d, '%s', '%s', '%s', false, false, false, %d)", idCadastro, ordemAgr, Integer.parseInt(ordem.getSelectedItem().toString()), label.getText(), coluna.getText(), tipo.getSelectedItem(), idAgr));
+                daoUtil.insert(String.format("INSERT INTO CAMPOSCADASTROS (idcadastro, ordem, ordemagrupador, label, coluna, tipo, vinculado, bloqueado, obrigatorio, pesquisavel, agrupador) VALUES (%d, %d, %d, '%s', '%s', '%s', false, false, false, false, %d)", idCadastro, ordemAgr, Integer.parseInt(ordem.getSelectedItem().toString()), label.getText(), coluna.getText(), tipo.getSelectedItem(), idAgr));
             }
             else {
                 daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET ordem = ordem + 1 WHERE ordem >= %d", Integer.parseInt(ordem.getSelectedItem().toString())));
-                daoUtil.insert(String.format("INSERT INTO CAMPOSCADASTROS (idcadastro, ordem, label, coluna, tipo, vinculado, bloqueado, obrigatorio, ordemagrupador) VALUES (%d, %d, '%s', '%s', '%s', false, false, false, 0)", idCadastro, Integer.parseInt(ordem.getSelectedItem().toString()), label.getText(), coluna.getText(), tipo.getSelectedItem()));
+                daoUtil.insert(String.format("INSERT INTO CAMPOSCADASTROS (idcadastro, ordem, label, coluna, tipo, vinculado, bloqueado, obrigatorio, pesquisavel, ordemagrupador) VALUES (%d, %d, '%s', '%s', '%s', false, false, false, false, 0)", idCadastro, Integer.parseInt(ordem.getSelectedItem().toString()), label.getText(), coluna.getText(), tipo.getSelectedItem()));
             }
 
             List<Map<String, Object>> idCampoList = daoUtil.select("SELECT MAX(id) AS id FROM CAMPOSCADASTROS", Collections.singletonList("id"));

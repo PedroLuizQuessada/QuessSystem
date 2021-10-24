@@ -85,7 +85,6 @@ public class AlterarListener implements ActionListener {
             JOptionPane.showMessageDialog(null, "Campo alterado", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         }
         catch (CampoException | DaoException exception){
-            exception.printStackTrace();
             JOptionPane.showMessageDialog(null, exception.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }

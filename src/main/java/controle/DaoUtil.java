@@ -100,6 +100,7 @@ public class DaoUtil {
                     "\nobrigatorio BIT NOT NULL, " +
                     "\nnativo BIT, " +
                     "\ninativo BIT, " +
+                    "\npesquisavel BIT, " +
                     "\nagrupador INTEGER, " +
                     "\nordemagrupador INTEGER, " +
                     "\nPRIMARY KEY(id))");

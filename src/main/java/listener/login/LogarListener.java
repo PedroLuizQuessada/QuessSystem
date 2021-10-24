@@ -34,7 +34,7 @@ public class LogarListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            List<Map<String, Object>> usuarios = daoUtil.select(String.format("SELECT login, senha, email, tentativasAcesso, adm FROM USUARIOS WHERE login = '%s'", tf1.getText()), Arrays.asList("login", "senha", "email", "tentativasAcesso", "adm"));
+            List<Map<String, Object>> usuarios = daoUtil.select(String.format("SELECT id, login, senha, email, tentativasAcesso, adm, departamento FROM USUARIOS WHERE login = '%s'", tf1.getText()), Arrays.asList("id", "login", "senha", "email", "tentativasAcesso", "adm", "departamento"));
             if (usuarios.isEmpty()) {
                 throw new UsuarioInvalidoException();
             }
@@ -57,7 +57,7 @@ public class LogarListener implements ActionListener {
             }
 
             daoUtil.update(String.format("UPDATE USUARIOS set tentativasAcesso = 0 WHERE login = '%s'", tf1.getText()));
-            Main.setUsuarioLogado(new UsuarioLogado((String) usuario.get("login"), Boolean.parseBoolean(String.valueOf(usuario.get("adm")))));
+            Main.setUsuarioLogado(new UsuarioLogado(Integer.parseInt(usuario.get("id").toString()), (String) usuario.get("login"), Boolean.parseBoolean(String.valueOf(usuario.get("adm"))), Integer.parseInt(usuario.get("departamento").toString())));
             jFrame.dispose();
             Main.getJanelas().add(new Home());
         }
