@@ -2,6 +2,7 @@ package listener.modelagem.cadastros.campos;
 
 import controle.ConfigsUtil;
 import controle.DaoUtil;
+import controle.enums.TipoCampoEnum;
 import controle.validacoes.CampoUtil;
 import exception.DaoException;
 import exception.validacoes.CampoException;
@@ -41,22 +42,41 @@ public class AlterarListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         try {
             campoUtil.validarCampo(idCadastro, idCampo, label, null, janela.getTipo(), configsUtil);
+            String colunaOrdem = "ordem";
 
-            List<Map<String, Object>> ordemInicialList = daoUtil.select(String.format("SELECT ordem FROM CAMPOSCADASTROS WHERE id = %d", idCampo), Collections.singletonList("ordem"));
-            int ordemInicial = Integer.parseInt(ordemInicialList.get(0).get("ordem").toString());
+            List<Map<String, Object>> ordemInicialList = daoUtil.select(String.format("SELECT ordem, ordemagrupador, agrupador FROM CAMPOSCADASTROS WHERE id = %d", idCampo), Collections.singletonList("ordem"));
+
+            if(ordemInicialList.get(0).get("agrupador") != null){
+                colunaOrdem = "ordemagrupador";
+            }
+
+            int ordemInicial = Integer.parseInt(ordemInicialList.get(0).get(colunaOrdem).toString());
             int fim = Integer.parseInt(ordem.getSelectedItem().toString());
 
             if(ordemInicial > Integer.parseInt(ordem.getSelectedItem().toString())){
                 for(int i = ordemInicial - 1; i >= fim; i--){
-                    daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET ordem = ordem + 1 WHERE ordem = %d AND idcadastro = %d",  i, idCadastro));
+                    if(colunaOrdem.equalsIgnoreCase("ordem")) {
+                        daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET ordem = ordem + 1 WHERE ordem = %d AND idcadastro = %d", i, idCadastro));
+                    }
+                    else {
+                        daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET ordemagrupador = ordemagrupador + 1 WHERE ordemagrupador = %d AND idcadastro = %d AND agrupador = %d", i, idCadastro, Integer.parseInt(ordemInicialList.get(0).get("agrupador").toString())));
+                    }
                 }
             }
             else{
                 for(int i = ordemInicial + 1; i <= fim; i++){
-                    daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET ordem = ordem - 1 WHERE ordem = %d AND idcadastro = %d", i, idCadastro));
+                    if(colunaOrdem.equalsIgnoreCase("ordem")) {
+                        daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET ordem = ordem - 1 WHERE ordem = %d AND idcadastro = %d", i, idCadastro));
+                    }
+                    else {
+                        daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET ordemagrupador = ordemagrupador - 1 WHERE ordemagrupador = %d AND idcadastro = %d AND agrupador = %d", i, idCadastro, Integer.parseInt(ordemInicialList.get(0).get("agrupador").toString())));
+                    }
                 }
             }
 
+            if(janela.getTipo().getSelectedItem().toString().equalsIgnoreCase(TipoCampoEnum.AGRUPADOR.getDescricao())){
+                daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET ordem = %d WHERE agrupador = %d", fim, idCampo));
+            }
             daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET ordem = %d, label = '%s' WHERE id = %d", Integer.parseInt(ordem.getSelectedItem().toString()), label.getText(), idCampo));
             configsUtil.alterarConfigs(idCampo, true);
 

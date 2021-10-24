@@ -34,6 +34,6 @@ public class BuscarListener implements ActionListener {
         if(!tipo.getSelectedItem().toString().equalsIgnoreCase(OpcaoComboEnum.CAMPO.getDescricao())){
             filtroTipo = " AND tipo = '" + tipo.getSelectedItem() + "' ";
         }
-        janela.carregarCampos("SELECT id, idcadastro, ordem, label, coluna, tipo, nativo FROM CAMPOSCADASTROS WHERE idcadastro = " + idCadastro + filtroOrdem + filtroTipo + " AND label LIKE '%" + label.getText() + "%' AND coluna LIKE '%" + coluna.getText() + "%' AND inativo <> true ORDER BY ordem");
+        janela.carregarCampos("SELECT id, idcadastro, ordem, label, coluna, tipo, nativo, agrupador, ordemagrupador FROM CAMPOSCADASTROS WHERE idcadastro = " + idCadastro + filtroOrdem + filtroTipo + " AND label LIKE '%" + label.getText() + "%' AND coluna LIKE '%" + coluna.getText() + "%' AND inativo <> true ORDER BY ordem, ordemagrupador");
     }
 }

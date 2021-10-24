@@ -3,6 +3,7 @@ package view.modelagem.cadastros.campos;
 import controle.ComboboxUtil;
 import controle.DaoUtil;
 import controle.JFrameUtil;
+import controle.enums.TipoCampoEnum;
 import exception.DaoException;
 import listener.home.VoltarListener;
 import listener.modelagem.cadastros.campos.AdicionarListener;
@@ -13,10 +14,8 @@ import main.Main;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 
@@ -38,7 +37,7 @@ public class Campos extends JFrame {
     public Campos(Integer id){
         this.idCadastro = id;
         carregarCabecalho(jPanel, id);
-        carregarCampos(String.format("SELECT id, idcadastro, ordem, label, coluna, tipo, nativo FROM CAMPOSCADASTROS WHERE idcadastro = %d AND inativo <> true ORDER BY ordem", id));
+        carregarCampos(String.format("SELECT id, idcadastro, ordem, label, coluna, tipo, nativo, agrupador, ordemagrupador FROM CAMPOSCADASTROS WHERE idcadastro = %d AND inativo <> true ORDER BY ordem, ordemagrupador", id));
 
         JScrollPane scroll = new JScrollPane(jPanel);
         scroll.setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER);
@@ -106,16 +105,34 @@ public class Campos extends JFrame {
         campos.clear();
 
         try{
-            List<Map<String, Object>> camposList = daoUtil.select(sql, Arrays.asList("id", "idcadastro", "ordem", "label", "coluna", "tipo", "nativo"));
+            List<Map<String, Object>> camposList = daoUtil.select(sql, Arrays.asList("id", "idcadastro", "ordem", "label", "coluna", "tipo", "nativo", "agrupador", "ordemagrupador"));
 
             for (Map<String, Object> campo: camposList){
+                String ordemLabel = "";
+                boolean agrupador = false;
+                Integer agrupadorId = null;
+                String colunaOrdem = "ordem";
+
+                if(campo.get("agrupador") != null){
+                    agrupadorId = Integer.parseInt(campo.get("agrupador").toString());
+                    colunaOrdem = "ordemagrupador";
+
+                    List<Map<String, Object>> agrupadorLabelList = daoUtil.select(String.format("SELECT label FROM CAMPOSCADASTROS WHERE id = %d", agrupadorId), Collections.singletonList("label"));
+                    ordemLabel = agrupadorLabelList.get(0).get("label").toString() + " - ";
+                }
+                ordemLabel = ordemLabel + campo.get(colunaOrdem).toString();
+
+                if(campo.get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.AGRUPADOR.getDescricao())){
+                    agrupador = true;
+                }
+
                 c.insets = new Insets(0, 20, 0, 0);
                 c.gridy++;
                 c.gridx = 0;
                 JTextField ordemCampo = new JTextField();
                 ordemCampo.setColumns(7);
                 ordemCampo.setEnabled(false);
-                ordemCampo.setText(campo.get("ordem").toString());
+                ordemCampo.setText(ordemLabel);
                 jPanel.add(ordemCampo, c);
 
                 c.insets = new Insets(0, 40, 0, 0);
@@ -147,7 +164,7 @@ public class Campos extends JFrame {
 
                 c.gridx++;
                 JButton excluir = new JButton("Excluir");
-                excluir.addActionListener(new ExcluirListener(this, Integer.valueOf(campo.get("idcadastro").toString()), Integer.valueOf(campo.get("id").toString()), Integer.valueOf(campo.get("ordem").toString())));
+                excluir.addActionListener(new ExcluirListener(this, Integer.valueOf(campo.get("idcadastro").toString()), Integer.valueOf(campo.get("id").toString()), Integer.valueOf(campo.get(colunaOrdem).toString()), agrupadorId, agrupador));
                 jPanel.add(excluir, c);
 
                 if(String.valueOf(campo.get("nativo")).equalsIgnoreCase("true")){

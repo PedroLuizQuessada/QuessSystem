@@ -230,7 +230,6 @@ public class DaoUtil {
             return listMapRetorno;
         }
         catch (Exception exception){
-            exception.printStackTrace();
             throw new DaoException();
         }
     }
@@ -256,7 +255,6 @@ public class DaoUtil {
             con.createStatement().executeUpdate(sql);
         }
         catch (Exception exception){
-            exception.printStackTrace();
             throw new DaoException();
         }
     }

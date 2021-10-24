@@ -112,14 +112,18 @@ public class CriarListener implements ActionListener {
                 daoUtil.insert(sqlInsertLinha + ")");
             }
 
-            Integer idAgr = null;
             if(configsUtil.getAgrupador() != null && !configsUtil.getAgrupador().getSelectedItem().toString().equals(OpcaoComboEnum.SEM_AGRUPADOR.getDescricao())){
-                List<Map<String, Object>> idAgrList = daoUtil.select(String.format("SELECT id FROM CAMPOSCADASTROS WHERE label = '%s' AND idcadastro = %d", configsUtil.getAgrupador().getSelectedItem(), idCadastro), Collections.singletonList("id"));
-                idAgr = Integer.parseInt(idAgrList.get(0).toString());
-            }
+                List<Map<String, Object>> agrList = daoUtil.select(String.format("SELECT id, ordem FROM CAMPOSCADASTROS WHERE label = '%s' AND idcadastro = %d", configsUtil.getAgrupador().getSelectedItem(), idCadastro), Arrays.asList("id", "ordem"));
+                Integer idAgr = Integer.parseInt(agrList.get(0).get("id").toString());
+                Integer ordemAgr = Integer.parseInt(agrList.get(0).get("ordem").toString());
 
-            daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET ordem = ordem + 1 WHERE ordem >= %d", Integer.parseInt(ordem.getSelectedItem().toString())));
-            daoUtil.insert(String.format("INSERT INTO CAMPOSCADASTROS (idcadastro, ordem, label, coluna, tipo, vinculado, bloqueado, obrigatorio, agrupador) VALUES (%d, %d, '%s', '%s', '%s', false, false, false, %d)", idCadastro, Integer.parseInt(ordem.getSelectedItem().toString()), label.getText(), coluna.getText(), tipo.getSelectedItem(), idAgr));
+                daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET ordemagrupador = ordemagrupador + 1 WHERE ordemagrupador >= %d AND agrupador = %d", Integer.parseInt(ordem.getSelectedItem().toString()), idAgr));
+                daoUtil.insert(String.format("INSERT INTO CAMPOSCADASTROS (idcadastro, ordem, ordemagrupador, label, coluna, tipo, vinculado, bloqueado, obrigatorio, agrupador) VALUES (%d, %d, %d, '%s', '%s', '%s', false, false, false, %d)", idCadastro, ordemAgr, Integer.parseInt(ordem.getSelectedItem().toString()), label.getText(), coluna.getText(), tipo.getSelectedItem(), idAgr));
+            }
+            else {
+                daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET ordem = ordem + 1 WHERE ordem >= %d", Integer.parseInt(ordem.getSelectedItem().toString())));
+                daoUtil.insert(String.format("INSERT INTO CAMPOSCADASTROS (idcadastro, ordem, label, coluna, tipo, vinculado, bloqueado, obrigatorio, ordemagrupador) VALUES (%d, %d, '%s', '%s', '%s', false, false, false, 0)", idCadastro, Integer.parseInt(ordem.getSelectedItem().toString()), label.getText(), coluna.getText(), tipo.getSelectedItem()));
+            }
 
             List<Map<String, Object>> idCampoList = daoUtil.select("SELECT MAX(id) AS id FROM CAMPOSCADASTROS", Collections.singletonList("id"));
             configsUtil.salvarConfigs(Integer.parseInt(idCampoList.get(0).get("id").toString()), true);

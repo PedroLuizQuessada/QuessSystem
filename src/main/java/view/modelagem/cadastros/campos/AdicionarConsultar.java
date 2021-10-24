@@ -8,6 +8,7 @@ import controle.mascaras.NumericoUtil;
 import exception.DaoException;
 import listener.home.VoltarListener;
 import listener.modelagem.AdicionarOpcaoListener;
+import listener.modelagem.AgrupadorOrdemListener;
 import listener.modelagem.RemoverOpcaoListener;
 import listener.modelagem.cadastros.campos.AlterarListener;
 import listener.modelagem.cadastros.campos.CriarListener;
@@ -182,18 +183,32 @@ public class AdicionarConsultar extends JFrame {
         c.insets = insets;
         add(voltar, c);
         camposConfigs.add(voltar);
-        ordem.removeAllItems();
 
         if (idCampo == null) {
-            comboboxUtil.carregarOrdem(idCadastro, ordem, true);
+            if(configsUtil.getAgrupador() != null) {
+                configsUtil.getAgrupador().addActionListener(new AgrupadorOrdemListener(configsUtil.getAgrupador(), ordem, true, idCadastro));
+                List<Map<String, Object>> agrupadores = daoUtil.select(String.format("SELECT label FROM CAMPOSCADASTROS WHERE idcadastro = %d AND tipo = '%s' AND inativo <> true", idCadastro, TipoCampoEnum.AGRUPADOR.getDescricao()), Collections.singletonList("label"));
+                for (Map<String, Object> agrupador : agrupadores) {
+                    configsUtil.getAgrupador().addItem(agrupador.get("label").toString());
+                }
+            }
+
+            comboboxUtil.carregarOrdem(idCadastro, ordem, true, true);
             titulo = "Criar Campo";
             jButton.setText("Criar campo");
             jButton.removeActionListener(criarListener);
             criarListener = new CriarListener(this, idCadastro, idCampo, configsUtil);
             jButton.addActionListener(criarListener);
         } else {
-            comboboxUtil.carregarOrdem(idCadastro, ordem, false);
-            carregarInfosCampo(idCampo);
+            Map<Boolean, String> map = carregarInfosCampo(idCampo);
+            if(map.containsKey(true)){
+                comboboxUtil.carregarOrdemAgrupador(idCadastro, ordem, false, true, configsUtil.getAgrupador().getSelectedItem().toString());
+                ordem.setSelectedItem(map.get(true));
+            }
+            else {
+                comboboxUtil.carregarOrdem(idCadastro, ordem, false, true);
+                ordem.setSelectedItem(map.get(false));
+            }
             coluna.setEnabled(false);
             tipo.setEnabled(false);
             jButton.removeActionListener(alterarListener);
@@ -592,24 +607,36 @@ public class AdicionarConsultar extends JFrame {
         add(configsUtil.getOrdenacaoDesc(), c);
     }
 
-    private void carregarInfosCampo(Integer idCampo) throws DaoException{
+    private Map<Boolean, String> carregarInfosCampo(Integer idCampo) throws DaoException{
+        Map<Boolean, String> mapRetorno = new HashMap<>();
+        String ordemValor;
+        boolean agrupado = false;
         List<Map<String, Object>> infosConfigsList;
-        List<Map<String, Object>> infosCampoList = daoUtil.select(String.format("SELECT ordem, label, coluna, tipo, nativo, agrupador FROM CAMPOSCADASTROS WHERE id = %d", idCampo), Arrays.asList("ordem", "label", "coluna", "tipo", "nativo", "agrupador"));
+        List<Map<String, Object>> infosCampoList = daoUtil.select(String.format("SELECT ordem, label, coluna, tipo, nativo, agrupador, ordemagrupador FROM CAMPOSCADASTROS WHERE id = %d", idCampo), Arrays.asList("ordem", "label", "coluna", "tipo", "nativo", "agrupador", "ordemagrupador"));
 
-        ordem.setSelectedItem(infosCampoList.get(0).get("ordem").toString());
+        if(infosCampoList.get(0).get("agrupador") != null) {
+            ordemValor = infosCampoList.get(0).get("ordemagrupador").toString();
+            agrupado = true;
+        }
+        else {
+            ordemValor = infosCampoList.get(0).get("ordem").toString();
+        }
+
+        mapRetorno.put(agrupado, ordemValor);
+
         label.setText(infosCampoList.get(0).get("label").toString());
         coluna.setText(infosCampoList.get(0).get("coluna").toString());
         tipo.setSelectedItem(infosCampoList.get(0).get("tipo").toString());
 
         if(configsUtil.getAgrupador() != null) {
-            List<Map<String, Object>> agrupadores = daoUtil.select("SELECT label FROM CAMPOSCADASTROS WHERE tipo = 'Agrupador'", Collections.singletonList("label"));
+            List<Map<String, Object>> agrupadores = daoUtil.select(String.format("SELECT label FROM CAMPOSCADASTROS WHERE tipo = '%s'", TipoCampoEnum.AGRUPADOR.getDescricao()), Collections.singletonList("label"));
             for (Map<String, Object> agrupador : agrupadores) {
                 configsUtil.getAgrupador().addItem(agrupador.get("label").toString());
             }
 
             if (infosCampoList.get(0).get("agrupador") != null && !infosCampoList.get(0).get("agrupador").toString().equalsIgnoreCase("0")) {
                 List<Map<String, Object>> agrupadorSelecionadoList = daoUtil.select(String.format("SELECT label FROM CAMPOSCADASTROS WHERE id = %d", Integer.parseInt(infosCampoList.get(0).get("agrupador").toString())), Collections.singletonList("label"));
-                String agrupadorSelecionado = agrupadorSelecionadoList.get(0).toString();
+                String agrupadorSelecionado = agrupadorSelecionadoList.get(0).get("label").toString();
                 configsUtil.getAgrupador().setSelectedItem(agrupadorSelecionado);
             }
         }
@@ -795,6 +822,8 @@ public class AdicionarConsultar extends JFrame {
                 configsUtil.getOrdenacaoDesc().setEnabled(false);
             }
         }
+
+        return mapRetorno;
     }
 
     public JComboBox<String> getOrdem() {
