@@ -10,9 +10,7 @@ import listener.home.VoltarListener;
 import listener.modelagem.AdicionarOpcaoListener;
 import listener.modelagem.AgrupadorOrdemListener;
 import listener.modelagem.RemoverOpcaoListener;
-import listener.modelagem.cadastros.campos.AlterarListener;
-import listener.modelagem.cadastros.campos.CriarListener;
-import listener.modelagem.cadastros.campos.TipoListener;
+import listener.modelagem.cadastros.campos.*;
 import main.Main;
 
 import javax.swing.*;
@@ -23,13 +21,15 @@ import java.util.List;
 public class AdicionarConsultar extends JFrame {
     private final DaoUtil daoUtil = new DaoUtil();
     private final ComboboxUtil comboboxUtil = new ComboboxUtil();
-    private final TextAreaUtil textAreaUtil = new TextAreaUtil();
+    private final AreaTextoUtil areaTextoUtil = new AreaTextoUtil();
     private final JFrameUtil jFrameUtil = new JFrameUtil();
 
     private final JComboBox<String> ordem = new JComboBox<>();
     private final JTextField label = new JTextField();
     private final JTextField coluna = new JTextField();
     private final JComboBox<String> tipo = new JComboBox<>();
+    private final JComboBox<String> acoes = new JComboBox<>();
+    private final JButton realizarAcao = new JButton("Escolha uma ação");
     private final JButton jButton = new JButton("Alterar");
     private final GridBagConstraints c = new GridBagConstraints();
 
@@ -38,8 +38,10 @@ public class AdicionarConsultar extends JFrame {
 
     private CriarListener criarListener;
     private AlterarListener alterarListener;
+    private AcoesListener acoesListener;
+    private RealizarAcaoListener realizarAcaoListener;
 
-    public AdicionarConsultar(Integer idCadastro, Integer idCampo){
+    public AdicionarConsultar(Integer idCadastro, Integer idCampo) {
         String titulo = "Consultar Campo";
         setLayout(new GridBagLayout());
 
@@ -79,44 +81,57 @@ public class AdicionarConsultar extends JFrame {
 
         try {
             carregarConfigs(camposConfigs, tipo.getSelectedItem().toString(), titulo, idCadastro, idCampo);
-        }
-        catch (DaoException exception){
+        } catch (DaoException exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     public void carregarConfigs(List<JComponent> camposConfigs, String tipoCampo, String titulo, Integer idCadastro, Integer idCampo) throws DaoException {
         Insets insets = new Insets(-200, 0, 0, -800);
-        for(JComponent campoConfig: camposConfigs){
+        for (JComponent campoConfig : camposConfigs) {
             remove(campoConfig);
         }
         camposConfigs.clear();
 
-        if(tipoCampo.equalsIgnoreCase(TipoCampoEnum.TEXTO.getDescricao())) {
+        if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.TEXTO.getDescricao())) {
             insets = new Insets(-345, 0, 0, -800);
             carrregarConfigsTexto(camposConfigs, idCampo);
-        }
-        else if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.NUMERICO.getDescricao())) {
-            insets = new Insets(-350, 0, 0, -800);
+        } else if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.NUMERICO.getDescricao())) {
+            if(idCampo == null) {
+                insets = new Insets(-350, 0, 0, -800);
+            }
+            else {
+                insets = new Insets(-375, -45, 0, -800);
+            }
             carrregarConfigsNumerico(camposConfigs, idCampo);
-        }
-        else if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.DATAHORA.getDescricao())) {
-            insets = new Insets(-350, 0, 0, -800);
+        } else if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.DATAHORA.getDescricao())) {
+            if(idCampo == null) {
+                insets = new Insets(-350, 0, 0, -800);
+            }
+            else {
+                insets = new Insets(-375, -75, 0, -800);
+            }
             carrregarConfigsDataHora(camposConfigs, idCampo);
-        }
-        else if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.DATA.getDescricao())) {
-            insets = new Insets(-350, 0, 0, -800);
+        } else if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.DATA.getDescricao())) {
+            if(idCampo == null) {
+                insets = new Insets(-350, 0, 0, -800);
+            }
+            else {
+                insets = new Insets(-375, -60, 0, -800);
+            }
             carrregarConfigsData(camposConfigs, idCampo);
-        }
-        else if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.CHECKBOX.getDescricao())) {
+        } else if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.CHECKBOX.getDescricao())) {
             insets = new Insets(-345, 0, 0, -800);
             carrregarConfigsCheckbox(camposConfigs, idCampo);
-        }
-        else if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.AREATEXTO.getDescricao())) {
-            insets = new Insets(-390, 0, 0, -950);
+        } else if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.AREATEXTO.getDescricao())) {
+            if(idCampo == null) {
+                insets = new Insets(-390, 0, 0, -950);
+            }
+            else {
+                insets = new Insets(-390, -65, 0, -950);
+            }
             carrregarConfigsAreaTexto(camposConfigs, idCampo);
-        }
-        else if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.COMBOBOX.getDescricao())) {
+        } else if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.COMBOBOX.getDescricao())) {
             insets = new Insets(-350, 0, 0, -800);
             c.insets = new Insets(40, 0, 0, 0);
             c.gridy++;
@@ -133,15 +148,36 @@ public class AdicionarConsultar extends JFrame {
             camposConfigs.add(configsUtil.getAgrupador());
             add(configsUtil.getAgrupador(), c);
 
-            if(idCampo != null) {
+            if (idCampo != null) {
                 configsUtil.getAgrupador().setEnabled(false);
-                insets = new Insets(-375, 0, 0, -800);
+                insets = new Insets(-360, 0, 0, -800);
                 c.gridy--;
                 c.gridy--;
                 carrregarConfigsCombobox(camposConfigs, idCampo);
+
+                c.insets = new Insets(-20, 70, 0, 0);
+                c.gridy = 6;
+                c.gridx = 1;
+                JLabel acoesLabel = new JLabel("Ações");
+                camposConfigs.add(acoesLabel);
+                add(acoesLabel, c);
+
+                c.insets = new Insets(-40, 70, 0, 0);
+                c.gridy++;
+                camposConfigs.add(acoes);
+                add(acoes, c);
+
+                c.insets = new Insets(-8, 70, 0, 0);
+                c.gridy++;
+                comboboxUtil.carregarAcoesCampo(acoes, idCampo, true);
+                camposConfigs.add(realizarAcao);
+                add(realizarAcao, c);
+
+                c.gridy--;
+                c.gridy--;
+                c.gridy--;
             }
-        }
-        else if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.RADIO.getDescricao())) {
+        } else if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.RADIO.getDescricao())) {
             insets = new Insets(-350, 0, 0, -800);
             c.insets = new Insets(40, 0, 0, 0);
             c.gridy++;
@@ -158,18 +194,39 @@ public class AdicionarConsultar extends JFrame {
             camposConfigs.add(configsUtil.getAgrupador());
             add(configsUtil.getAgrupador(), c);
 
-            if(idCampo != null) {
+            if (idCampo != null) {
                 configsUtil.getAgrupador().setEnabled(false);
-                insets = new Insets(-375, 0, 0, -800);
+                insets = new Insets(-360, 0, 0, -800);
                 c.gridy--;
                 c.gridy--;
                 carrregarConfigsRadio(camposConfigs, idCampo);
+
+                c.insets = new Insets(-20, 70, 0, 0);
+                c.gridy = 6;
+                c.gridx = 1;
+                JLabel acoesLabel = new JLabel("Ações");
+                camposConfigs.add(acoesLabel);
+                add(acoesLabel, c);
+
+                c.insets = new Insets(-40, 70, 0, 0);
+                c.gridy++;
+                camposConfigs.add(acoes);
+                add(acoes, c);
+
+                c.insets = new Insets(-8, 70, 0, 0);
+                c.gridy++;
+                comboboxUtil.carregarAcoesCampo(acoes, idCampo, true);
+                camposConfigs.add(realizarAcao);
+                add(realizarAcao, c);
+
+                c.gridy--;
+                c.gridy--;
+                c.gridy--;
             }
-        }
-        else if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.AGRUPADOR.getDescricao())) {
-            if(idCampo != null) {
+        } else if (tipoCampo.equalsIgnoreCase(TipoCampoEnum.AGRUPADOR.getDescricao())) {
+            if (idCampo != null) {
                 insets = new Insets(-350, 0, 0, -800);
-                carrregarConfigsAgrupador(camposConfigs);
+                carrregarConfigsAgrupador(camposConfigs, idCampo);
             }
         }
 
@@ -185,7 +242,7 @@ public class AdicionarConsultar extends JFrame {
         camposConfigs.add(voltar);
 
         if (idCampo == null) {
-            if(configsUtil.getAgrupador() != null) {
+            if (configsUtil.getAgrupador() != null) {
                 configsUtil.getAgrupador().addActionListener(new AgrupadorOrdemListener(configsUtil.getAgrupador(), ordem, true, idCadastro));
                 List<Map<String, Object>> agrupadores = daoUtil.select(String.format("SELECT label FROM CAMPOSCADASTROS WHERE idcadastro = %d AND tipo = '%s' AND inativo <> true", idCadastro, TipoCampoEnum.AGRUPADOR.getDescricao()), Collections.singletonList("label"));
                 for (Map<String, Object> agrupador : agrupadores) {
@@ -200,12 +257,19 @@ public class AdicionarConsultar extends JFrame {
             criarListener = new CriarListener(this, idCadastro, idCampo, configsUtil);
             jButton.addActionListener(criarListener);
         } else {
+            acoes.removeActionListener(acoesListener);
+            acoesListener = new AcoesListener(acoes, realizarAcao);
+            acoes.addActionListener(acoesListener);
+
+            realizarAcao.removeActionListener(realizarAcaoListener);
+            realizarAcaoListener = new RealizarAcaoListener(idCampo, realizarAcao, acoes, tipo, configsUtil.getAgrupador());
+            realizarAcao.addActionListener(realizarAcaoListener);
+
             Map<Boolean, String> map = carregarInfosCampo(idCampo);
-            if(map.containsKey(true)){
+            if (map.containsKey(true)) {
                 comboboxUtil.carregarOrdemAgrupador(idCadastro, ordem, false, true, configsUtil.getAgrupador().getSelectedItem().toString());
                 ordem.setSelectedItem(map.get(true));
-            }
-            else {
+            } else {
                 comboboxUtil.carregarOrdem(idCadastro, ordem, false, true);
                 ordem.setSelectedItem(map.get(false));
             }
@@ -219,7 +283,7 @@ public class AdicionarConsultar extends JFrame {
         jFrameUtil.configurarJanela(this, Main.getImageIcon(), titulo, 1000, 300);
     }
 
-    private void carrregarConfigsTexto(List<JComponent> camposConfigs, Integer idCampo){
+    private void carrregarConfigsTexto(List<JComponent> camposConfigs, Integer idCampo) throws DaoException {
         c.insets = new Insets(40, 70, 0, 0);
         c.gridy++;
         c.gridx = 1;
@@ -247,12 +311,29 @@ public class AdicionarConsultar extends JFrame {
         configsUtil.getValorPadrao().setColumns(7);
         add(configsUtil.getValorPadrao(), c);
 
-        if(idCampo != null){
+        if (idCampo != null) {
+            c.insets = new Insets(40, 70, 0, 0);
+            c.gridy = 3;
+            c.gridx = 2;
+            JLabel acoesLabel = new JLabel("Ações");
+            camposConfigs.add(acoesLabel);
+            add(acoesLabel, c);
+
+            c.insets = new Insets(0, 70, 0, 0);
+            c.gridy++;
+            camposConfigs.add(acoes);
+            add(acoes, c);
+
+            c.gridy++;
+            comboboxUtil.carregarAcoesCampo(acoes, idCampo, true);
+            camposConfigs.add(realizarAcao);
+            add(realizarAcao, c);
+
             configsUtil.getAgrupador().setEnabled(false);
         }
     }
 
-    private void carrregarConfigsNumerico(List<JComponent> camposConfigs, Integer idCampo){
+    private void carrregarConfigsNumerico(List<JComponent> camposConfigs, Integer idCampo) throws DaoException {
         c.insets = new Insets(40, 70, 0, 0);
         c.gridy++;
         c.gridx = 1;
@@ -282,7 +363,7 @@ public class AdicionarConsultar extends JFrame {
         c.gridx = 2;
         configsUtil.setLimite(new JComboBox<>());
         camposConfigs.add(configsUtil.getLimite());
-        for(LimiteNumericoEnum limiteNumericoEnum: LimiteNumericoEnum.values()){
+        for (LimiteNumericoEnum limiteNumericoEnum : LimiteNumericoEnum.values()) {
             configsUtil.getLimite().addItem(limiteNumericoEnum.getDescricao());
         }
         configsUtil.getLimite().setSelectedItem(LimiteNumericoEnum.PADRAO.getDescricao());
@@ -295,12 +376,29 @@ public class AdicionarConsultar extends JFrame {
         configsUtil.getValorPadrao().setColumns(7);
         add(configsUtil.getValorPadrao(), c);
 
-        if(idCampo != null){
+        if (idCampo != null) {
+            c.insets = new Insets(40, 0, 0, 0);
+            c.gridy = 3;
+            c.gridx = 0;
+            JLabel acoesLabel = new JLabel("Ações");
+            camposConfigs.add(acoesLabel);
+            add(acoesLabel, c);
+
+            c.insets = new Insets(0, 0, 0, 0);
+            c.gridy++;
+            camposConfigs.add(acoes);
+            add(acoes, c);
+
+            c.gridy++;
+            comboboxUtil.carregarAcoesCampo(acoes, idCampo, true);
+            camposConfigs.add(realizarAcao);
+            add(realizarAcao, c);
+
             configsUtil.getAgrupador().setEnabled(false);
         }
     }
 
-    private void carrregarConfigsDataHora(List<JComponent> camposConfigs, Integer idCampo){
+    private void carrregarConfigsDataHora(List<JComponent> camposConfigs, Integer idCampo) throws DaoException {
         c.insets = new Insets(40, 70, 0, 0);
         c.gridy++;
         c.gridx = 1;
@@ -330,7 +428,7 @@ public class AdicionarConsultar extends JFrame {
         c.gridx = 2;
         configsUtil.setLimite(new JComboBox<>());
         camposConfigs.add(configsUtil.getLimite());
-        for(LimiteDataHoraEnum limiteDataHoraEnum: LimiteDataHoraEnum.values()){
+        for (LimiteDataHoraEnum limiteDataHoraEnum : LimiteDataHoraEnum.values()) {
             configsUtil.getLimite().addItem(limiteDataHoraEnum.getDescricao());
         }
         configsUtil.getLimite().setSelectedItem(LimiteDataHoraEnum.PADRAO.getDescricao());
@@ -343,12 +441,29 @@ public class AdicionarConsultar extends JFrame {
         configsUtil.getValorPadrao().setColumns(7);
         add(configsUtil.getValorPadrao(), c);
 
-        if(idCampo != null){
+        if (idCampo != null) {
+            c.insets = new Insets(40, 0, 0, 0);
+            c.gridy = 3;
+            c.gridx = 0;
+            JLabel acoesLabel = new JLabel("Ações");
+            camposConfigs.add(acoesLabel);
+            add(acoesLabel, c);
+
+            c.insets = new Insets(0, 0, 0, 0);
+            c.gridy++;
+            camposConfigs.add(acoes);
+            add(acoes, c);
+
+            c.gridy++;
+            comboboxUtil.carregarAcoesCampo(acoes, idCampo, true);
+            camposConfigs.add(realizarAcao);
+            add(realizarAcao, c);
+
             configsUtil.getAgrupador().setEnabled(false);
         }
     }
 
-    private void carrregarConfigsData(List<JComponent> camposConfigs, Integer idCampo){
+    private void carrregarConfigsData(List<JComponent> camposConfigs, Integer idCampo) throws DaoException {
         c.insets = new Insets(40, 70, 0, 0);
         c.gridy++;
         c.gridx = 1;
@@ -378,7 +493,7 @@ public class AdicionarConsultar extends JFrame {
         c.gridx = 2;
         configsUtil.setLimite(new JComboBox<>());
         camposConfigs.add(configsUtil.getLimite());
-        for(LimiteDataEnum limiteDataEnum: LimiteDataEnum.values()){
+        for (LimiteDataEnum limiteDataEnum : LimiteDataEnum.values()) {
             configsUtil.getLimite().addItem(limiteDataEnum.getDescricao());
         }
         configsUtil.getLimite().setSelectedItem(LimiteDataHoraEnum.PADRAO.getDescricao());
@@ -391,12 +506,29 @@ public class AdicionarConsultar extends JFrame {
         configsUtil.getValorPadrao().setColumns(7);
         add(configsUtil.getValorPadrao(), c);
 
-        if(idCampo != null){
+        if (idCampo != null) {
+            c.insets = new Insets(40, 0, 0, 0);
+            c.gridy = 3;
+            c.gridx = 0;
+            JLabel acoesLabel = new JLabel("Ações");
+            camposConfigs.add(acoesLabel);
+            add(acoesLabel, c);
+
+            c.insets = new Insets(0, 0, 0, 0);
+            c.gridy++;
+            camposConfigs.add(acoes);
+            add(acoes, c);
+
+            c.gridy++;
+            comboboxUtil.carregarAcoesCampo(acoes, idCampo, true);
+            camposConfigs.add(realizarAcao);
+            add(realizarAcao, c);
+
             configsUtil.getAgrupador().setEnabled(false);
         }
     }
 
-    private void carrregarConfigsCheckbox(List<JComponent> camposConfigs, Integer idCampo){
+    private void carrregarConfigsCheckbox(List<JComponent> camposConfigs, Integer idCampo) throws DaoException {
         c.insets = new Insets(40, 70, 0, 0);
         c.gridy++;
         c.gridx = 1;
@@ -423,12 +555,29 @@ public class AdicionarConsultar extends JFrame {
         camposConfigs.add(configsUtil.getEstadoPadrao());
         add(configsUtil.getEstadoPadrao(), c);
 
-        if(idCampo != null){
+        if (idCampo != null) {
+            c.insets = new Insets(40, 70, 0, 0);
+            c.gridy = 3;
+            c.gridx = 2;
+            JLabel acoesLabel = new JLabel("Ações");
+            camposConfigs.add(acoesLabel);
+            add(acoesLabel, c);
+
+            c.insets = new Insets(0, 70, 0, 0);
+            c.gridy++;
+            camposConfigs.add(acoes);
+            add(acoes, c);
+
+            c.gridy++;
+            comboboxUtil.carregarAcoesCampo(acoes, idCampo, true);
+            camposConfigs.add(realizarAcao);
+            add(realizarAcao, c);
+
             configsUtil.getAgrupador().setEnabled(false);
         }
     }
 
-    private void carrregarConfigsAreaTexto(List<JComponent> camposConfigs, Integer idCampo){
+    private void carrregarConfigsAreaTexto(List<JComponent> camposConfigs, Integer idCampo) throws DaoException {
         c.insets = new Insets(40, 70, 0, 0);
         c.gridy++;
         c.gridx = 1;
@@ -467,15 +616,33 @@ public class AdicionarConsultar extends JFrame {
         c.gridx = 3;
         configsUtil.setValorPadraoArea(new JTextArea());
         camposConfigs.add(configsUtil.getValorPadraoArea());
-        textAreaUtil.configurarTextArea(configsUtil.getValorPadraoArea());
+        areaTextoUtil.configurarTextArea(configsUtil.getValorPadraoArea());
         add(configsUtil.getValorPadraoArea(), c);
 
-        if(idCampo != null){
+        if (idCampo != null) {
+            c.insets = new Insets(40, 0, 0, 0);
+            c.gridy = 3;
+            c.gridx = 0;
+            JLabel acoesLabel = new JLabel("Ações");
+            camposConfigs.add(acoesLabel);
+            add(acoesLabel, c);
+
+            c.insets = new Insets(-40, 0, 0, 0);
+            c.gridy++;
+            camposConfigs.add(acoes);
+            add(acoes, c);
+
+            c.insets = new Insets(-53, 0, 0, 0);
+            c.gridy++;
+            comboboxUtil.carregarAcoesCampo(acoes, idCampo, true);
+            camposConfigs.add(realizarAcao);
+            add(realizarAcao, c);
+
             configsUtil.getAgrupador().setEnabled(false);
         }
     }
 
-    private void carrregarConfigsCombobox(List<JComponent> camposConfigs, Integer idCampo){
+    private void carrregarConfigsCombobox(List<JComponent> camposConfigs, Integer idCampo) {
         c.insets = new Insets(40, 70, 0, 0);
         c.gridy++;
         c.gridx = 1;
@@ -528,7 +695,7 @@ public class AdicionarConsultar extends JFrame {
         configsUtil.getRemoverOpcao().addActionListener(new RemoverOpcaoListener(idCampo, true, configsUtil.getOpcoesAdicionadas(), configsUtil.getOpcaoPadrao(), true));
     }
 
-    private void carrregarConfigsRadio(List<JComponent> camposConfigs, Integer idCampo){
+    private void carrregarConfigsRadio(List<JComponent> camposConfigs, Integer idCampo) {
         c.insets = new Insets(40, 70, 0, 0);
         c.gridy++;
         c.gridx = 1;
@@ -581,13 +748,18 @@ public class AdicionarConsultar extends JFrame {
         configsUtil.getRemoverOpcao().addActionListener(new RemoverOpcaoListener(idCampo, true, configsUtil.getOpcoesAdicionadas(), configsUtil.getOpcaoPadrao(), false));
     }
 
-    private void carrregarConfigsAgrupador(List<JComponent> camposConfigs){
+    private void carrregarConfigsAgrupador(List<JComponent> camposConfigs, int idCampo) throws DaoException {
         c.insets = new Insets(40, 70, 0, 0);
         c.gridy++;
         c.gridx = 1;
         JLabel novaOpcaoLabel = new JLabel("Direcionar por campo");
         camposConfigs.add(novaOpcaoLabel);
         add(novaOpcaoLabel, c);
+
+        c.gridx = 2;
+        JLabel acoesLabel = new JLabel("Ações");
+        camposConfigs.add(acoesLabel);
+        add(acoesLabel, c);
 
         c.gridx = 3;
         JLabel opcaoPadraoLabel = new JLabel("Mais recentes primeiro");
@@ -601,24 +773,33 @@ public class AdicionarConsultar extends JFrame {
         camposConfigs.add(configsUtil.getCampoOrdenador());
         add(configsUtil.getCampoOrdenador(), c);
 
+        c.gridx = 2;
+        camposConfigs.add(acoes);
+        add(acoes, c);
+
         c.gridx = 3;
         configsUtil.setOrdenacaoDesc(new JCheckBox());
         camposConfigs.add(configsUtil.getOrdenacaoDesc());
         add(configsUtil.getOrdenacaoDesc(), c);
+
+        c.gridx = 2;
+        c.gridy++;
+        comboboxUtil.carregarAcoesCampo(acoes, idCampo, true);
+        camposConfigs.add(realizarAcao);
+        add(realizarAcao, c);
     }
 
-    private Map<Boolean, String> carregarInfosCampo(Integer idCampo) throws DaoException{
+    private Map<Boolean, String> carregarInfosCampo(Integer idCampo) throws DaoException {
         Map<Boolean, String> mapRetorno = new HashMap<>();
         String ordemValor;
         boolean agrupado = false;
         List<Map<String, Object>> infosConfigsList;
         List<Map<String, Object>> infosCampoList = daoUtil.select(String.format("SELECT ordem, label, coluna, tipo, nativo, agrupador, ordemagrupador FROM CAMPOSCADASTROS WHERE id = %d", idCampo), Arrays.asList("ordem", "label", "coluna", "tipo", "nativo", "agrupador", "ordemagrupador"));
 
-        if(infosCampoList.get(0).get("agrupador") != null) {
+        if (infosCampoList.get(0).get("agrupador") != null) {
             ordemValor = infosCampoList.get(0).get("ordemagrupador").toString();
             agrupado = true;
-        }
-        else {
+        } else {
             ordemValor = infosCampoList.get(0).get("ordem").toString();
         }
 
@@ -628,7 +809,7 @@ public class AdicionarConsultar extends JFrame {
         coluna.setText(infosCampoList.get(0).get("coluna").toString());
         tipo.setSelectedItem(infosCampoList.get(0).get("tipo").toString());
 
-        if(configsUtil.getAgrupador() != null) {
+        if (configsUtil.getAgrupador() != null) {
             List<Map<String, Object>> agrupadores = daoUtil.select(String.format("SELECT label FROM CAMPOSCADASTROS WHERE tipo = '%s'", TipoCampoEnum.AGRUPADOR.getDescricao()), Collections.singletonList("label"));
             for (Map<String, Object> agrupador : agrupadores) {
                 configsUtil.getAgrupador().addItem(agrupador.get("label").toString());
@@ -641,7 +822,7 @@ public class AdicionarConsultar extends JFrame {
             }
         }
 
-        if(infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.TEXTO.getDescricao())) {
+        if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.TEXTO.getDescricao())) {
             infosConfigsList = daoUtil.select(String.format("SELECT * FROM CONFIGSCAMPOSTEXTO WHERE idcampo = %d AND cadastro = true", idCampo), Collections.singletonList("valorpadrao"));
 
             if (infosConfigsList.get(0).get("valorpadrao") != null) {
@@ -651,8 +832,7 @@ public class AdicionarConsultar extends JFrame {
             if (infosCampoList.get(0).get("nativo") != null) {
                 configsUtil.getValorPadrao().setEnabled(false);
             }
-        }
-        else if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.NUMERICO.getDescricao())) {
+        } else if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.NUMERICO.getDescricao())) {
             infosConfigsList = daoUtil.select(String.format("SELECT * FROM CONFIGSCAMPOSNUMERICO WHERE idcampo = %d AND cadastro = true", idCampo), Arrays.asList("valorpadrao", "limite"));
 
             if (infosConfigsList.get(0).get("valorpadrao") != null) {
@@ -666,8 +846,7 @@ public class AdicionarConsultar extends JFrame {
                 configsUtil.getValorPadrao().setEnabled(false);
                 configsUtil.getLimite().setEnabled(false);
             }
-        }
-        else if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.DATAHORA.getDescricao())) {
+        } else if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.DATAHORA.getDescricao())) {
             infosConfigsList = daoUtil.select(String.format("SELECT * FROM CONFIGSCAMPOSDATAHORA WHERE idcampo = %d AND cadastro = true", idCampo), Arrays.asList("valorpadrao", "limite"));
 
             if (infosConfigsList.get(0).get("valorpadrao") != null) {
@@ -681,8 +860,7 @@ public class AdicionarConsultar extends JFrame {
                 configsUtil.getValorPadrao().setEnabled(false);
                 configsUtil.getLimite().setEnabled(false);
             }
-        }
-        else if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.DATA.getDescricao())) {
+        } else if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.DATA.getDescricao())) {
             infosConfigsList = daoUtil.select(String.format("SELECT * FROM CONFIGSCAMPOSDATA WHERE idcampo = %d AND cadastro = true", idCampo), Arrays.asList("valorpadrao", "limite"));
 
             if (infosConfigsList.get(0).get("valorpadrao") != null) {
@@ -696,8 +874,7 @@ public class AdicionarConsultar extends JFrame {
                 configsUtil.getValorPadrao().setEnabled(false);
                 configsUtil.getLimite().setEnabled(false);
             }
-        }
-        else if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.CHECKBOX.getDescricao())) {
+        } else if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.CHECKBOX.getDescricao())) {
             infosConfigsList = daoUtil.select(String.format("SELECT * FROM CONFIGSCAMPOSCHECKBOX WHERE idcampo = %d AND cadastro = true", idCampo), Collections.singletonList("estadopadrao"));
 
             if (infosConfigsList.get(0).get("estadopadrao") != null && infosConfigsList.get(0).get("estadopadrao").toString().equalsIgnoreCase("true")) {
@@ -707,8 +884,7 @@ public class AdicionarConsultar extends JFrame {
             if (infosCampoList.get(0).get("nativo") != null) {
                 configsUtil.getEstadoPadrao().setEnabled(false);
             }
-        }
-        else if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.AREATEXTO.getDescricao())) {
+        } else if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.AREATEXTO.getDescricao())) {
             infosConfigsList = daoUtil.select(String.format("SELECT * FROM CONFIGSCAMPOSAREATEXTO WHERE idcampo = %d AND cadastro = true", idCampo), Arrays.asList("valorpadrao", "limitecaracteres"));
 
             if (infosConfigsList.get(0).get("valorpadrao") != null) {
@@ -723,8 +899,7 @@ public class AdicionarConsultar extends JFrame {
                 configsUtil.getValorPadraoArea().setEnabled(false);
                 configsUtil.getLimiteCaracteres().setEnabled(false);
             }
-        }
-        else if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.COMBOBOX.getDescricao())) {
+        } else if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.COMBOBOX.getDescricao())) {
             configsUtil.getOpcoesAdicionadas().removeAllItems();
             configsUtil.getOpcaoPadrao().removeAllItems();
 
@@ -738,8 +913,8 @@ public class AdicionarConsultar extends JFrame {
             if (infosConfigsList.get(0).get("opcoes") != null) {
                 String[] opcoes = infosConfigsList.get(0).get("opcoes").toString().split("_");
 
-                for(String opcao: opcoes){
-                    if(opcao.length() > 0) {
+                for (String opcao : opcoes) {
+                    if (opcao.length() > 0) {
                         configsUtil.getOpcoesAdicionadas().addItem(opcao);
                         configsUtil.getOpcaoPadrao().addItem(opcao);
                     }
@@ -760,8 +935,7 @@ public class AdicionarConsultar extends JFrame {
                 configsUtil.getAdicionarOpcao().setEnabled(false);
                 configsUtil.getRemoverOpcao().setEnabled(false);
             }
-        }
-        else if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.RADIO.getDescricao())) {
+        } else if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.RADIO.getDescricao())) {
             configsUtil.getOpcoesAdicionadas().removeAllItems();
             configsUtil.getOpcaoPadrao().removeAllItems();
 
@@ -775,8 +949,8 @@ public class AdicionarConsultar extends JFrame {
             if (infosConfigsList.get(0).get("opcoes") != null) {
                 String[] opcoes = infosConfigsList.get(0).get("opcoes").toString().split("_");
 
-                for(String opcao: opcoes){
-                    if(opcao.length() > 0) {
+                for (String opcao : opcoes) {
+                    if (opcao.length() > 0) {
                         configsUtil.getOpcoesAdicionadas().addItem(opcao);
                         configsUtil.getOpcaoPadrao().addItem(opcao);
                     }
@@ -797,23 +971,22 @@ public class AdicionarConsultar extends JFrame {
                 configsUtil.getAdicionarOpcao().setEnabled(false);
                 configsUtil.getRemoverOpcao().setEnabled(false);
             }
-        }
-        else if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.AGRUPADOR.getDescricao())) {
+        } else if (infosCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.AGRUPADOR.getDescricao())) {
             configsUtil.getCampoOrdenador().removeAllItems();
             configsUtil.getCampoOrdenador().addItem("ID");
             configsUtil.getCampoOrdenador().setSelectedItem("ID");
 
             List<Map<String, Object>> camposAgrupados = daoUtil.select(String.format("SELECT label FROM CAMPOSCADASTROS WHERE agrupador = %d", idCampo), Collections.singletonList("label"));
-            for(Map<String, Object> campoAgrupado: camposAgrupados){
+            for (Map<String, Object> campoAgrupado : camposAgrupados) {
                 configsUtil.getCampoOrdenador().addItem(campoAgrupado.get("label").toString());
             }
             infosConfigsList = daoUtil.select(String.format("SELECT * FROM CONFIGSCAMPOSAGRUPADOR WHERE idcampo = %d AND cadastro = true", idCampo), Arrays.asList("ordenacaodesc", "ordenacaocampo"));
 
-            if(infosConfigsList.get(0).get("ordenacaodesc") != null && infosConfigsList.get(0).get("ordenacaodesc").toString().equalsIgnoreCase("true")) {
+            if (infosConfigsList.get(0).get("ordenacaodesc") != null && infosConfigsList.get(0).get("ordenacaodesc").toString().equalsIgnoreCase("true")) {
                 configsUtil.getOrdenacaoDesc().setSelected(true);
             }
 
-            if(infosConfigsList.get(0).get("ordenacaocampo") != null){
+            if (infosConfigsList.get(0).get("ordenacaocampo") != null) {
                 configsUtil.getCampoOrdenador().setSelectedItem(infosConfigsList.get(0).get("ordenacaocampo"));
             }
 

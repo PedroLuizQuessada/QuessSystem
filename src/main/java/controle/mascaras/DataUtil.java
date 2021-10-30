@@ -30,4 +30,19 @@ public class DataUtil implements KeyListener {
     public void keyReleased(KeyEvent e) {
 
     }
+
+    public String converterData(){
+        String data = "";
+
+        if(campo.getText().length() == 10){
+            data = data + campo.getText().substring(6) + "-";
+            data = data + campo.getText().substring(3, 5) + "-";
+            data = data + campo.getText().substring(0, 2);
+        }
+        else {
+            campo.setText("");
+        }
+
+        return data;
+    }
 }

@@ -98,9 +98,10 @@ public class DaoUtil {
                     "\nvinculado BIT NOT NULL, " +
                     "\nbloqueado BIT NOT NULL, " +
                     "\nobrigatorio BIT NOT NULL, " +
+                    "\npesquisavel BIT, " +
+                    "\nquebralinha BIT, " +
                     "\nnativo BIT, " +
                     "\ninativo BIT, " +
-                    "\npesquisavel BIT, " +
                     "\nagrupador INTEGER, " +
                     "\nordemagrupador INTEGER, " +
                     "\nPRIMARY KEY(id))");

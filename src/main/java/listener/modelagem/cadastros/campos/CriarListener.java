@@ -53,7 +53,20 @@ public class CriarListener implements ActionListener {
             StringBuilder sqlInsert = new StringBuilder(String.format("INSERT INTO %s (", tabelaCadastro));
             List<String> colunasList = new ArrayList<>();
 
-            List<Map<String, Object>> colunas = daoUtil.select(String.format("SELECT coluna, tipo FROM CAMPOSCADASTROS WHERE idcadastro = %d", idCadastro), Arrays.asList("coluna", "tipo"));
+            if(configsUtil.getAgrupador() != null && !configsUtil.getAgrupador().getSelectedItem().toString().equals(OpcaoComboEnum.SEM_AGRUPADOR.getDescricao())){
+                List<Map<String, Object>> agrList = daoUtil.select(String.format("SELECT id, ordem FROM CAMPOSCADASTROS WHERE label = '%s' AND idcadastro = %d", configsUtil.getAgrupador().getSelectedItem(), idCadastro), Arrays.asList("id", "ordem"));
+                Integer idAgr = Integer.parseInt(agrList.get(0).get("id").toString());
+                Integer ordemAgr = Integer.parseInt(agrList.get(0).get("ordem").toString());
+
+                daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET ordemagrupador = ordemagrupador + 1 WHERE ordemagrupador >= %d AND agrupador = %d", Integer.parseInt(ordem.getSelectedItem().toString()), idAgr));
+                daoUtil.insert(String.format("INSERT INTO CAMPOSCADASTROS (idcadastro, ordem, ordemagrupador, label, coluna, tipo, vinculado, bloqueado, obrigatorio, pesquisavel, agrupador) VALUES (%d, %d, %d, '%s', '%s', '%s', false, false, false, false, %d)", idCadastro, ordemAgr, Integer.parseInt(ordem.getSelectedItem().toString()), label.getText(), coluna.getText(), tipo.getSelectedItem(), idAgr));
+            }
+            else {
+                daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET ordem = ordem + 1 WHERE ordem >= %d", Integer.parseInt(ordem.getSelectedItem().toString())));
+                daoUtil.insert(String.format("INSERT INTO CAMPOSCADASTROS (idcadastro, ordem, label, coluna, tipo, vinculado, bloqueado, obrigatorio, pesquisavel, ordemagrupador) VALUES (%d, %d, '%s', '%s', '%s', false, false, false, false, 0)", idCadastro, Integer.parseInt(ordem.getSelectedItem().toString()), label.getText(), coluna.getText(), tipo.getSelectedItem()));
+            }
+
+            List<Map<String, Object>> colunas = daoUtil.select(String.format("SELECT coluna, tipo FROM CAMPOSCADASTROS WHERE idcadastro = %d AND coluna != 'id'", idCadastro), Arrays.asList("coluna", "tipo"));
             for(Map<String, Object> coluna: colunas){
                 if (String.valueOf(coluna.get("tipo")).equalsIgnoreCase(TipoCampoEnum.AGRUPADOR.getDescricao())){
                     break;
@@ -110,19 +123,6 @@ public class CriarListener implements ActionListener {
                 }
                 sqlInsertLinha = new StringBuilder(sqlInsertLinha.substring(0, sqlInsertLinha.length() - 3));
                 daoUtil.insert(sqlInsertLinha + ")");
-            }
-
-            if(configsUtil.getAgrupador() != null && !configsUtil.getAgrupador().getSelectedItem().toString().equals(OpcaoComboEnum.SEM_AGRUPADOR.getDescricao())){
-                List<Map<String, Object>> agrList = daoUtil.select(String.format("SELECT id, ordem FROM CAMPOSCADASTROS WHERE label = '%s' AND idcadastro = %d", configsUtil.getAgrupador().getSelectedItem(), idCadastro), Arrays.asList("id", "ordem"));
-                Integer idAgr = Integer.parseInt(agrList.get(0).get("id").toString());
-                Integer ordemAgr = Integer.parseInt(agrList.get(0).get("ordem").toString());
-
-                daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET ordemagrupador = ordemagrupador + 1 WHERE ordemagrupador >= %d AND agrupador = %d", Integer.parseInt(ordem.getSelectedItem().toString()), idAgr));
-                daoUtil.insert(String.format("INSERT INTO CAMPOSCADASTROS (idcadastro, ordem, ordemagrupador, label, coluna, tipo, vinculado, bloqueado, obrigatorio, pesquisavel, agrupador) VALUES (%d, %d, %d, '%s', '%s', '%s', false, false, false, false, %d)", idCadastro, ordemAgr, Integer.parseInt(ordem.getSelectedItem().toString()), label.getText(), coluna.getText(), tipo.getSelectedItem(), idAgr));
-            }
-            else {
-                daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET ordem = ordem + 1 WHERE ordem >= %d", Integer.parseInt(ordem.getSelectedItem().toString())));
-                daoUtil.insert(String.format("INSERT INTO CAMPOSCADASTROS (idcadastro, ordem, label, coluna, tipo, vinculado, bloqueado, obrigatorio, pesquisavel, ordemagrupador) VALUES (%d, %d, '%s', '%s', '%s', false, false, false, false, 0)", idCadastro, Integer.parseInt(ordem.getSelectedItem().toString()), label.getText(), coluna.getText(), tipo.getSelectedItem()));
             }
 
             List<Map<String, Object>> idCampoList = daoUtil.select("SELECT MAX(id) AS id FROM CAMPOSCADASTROS", Collections.singletonList("id"));

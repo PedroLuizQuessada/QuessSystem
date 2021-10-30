@@ -34,6 +34,8 @@ public class VoltarListener implements ActionListener {
             case "view.administrador.usuarios.Usuarios":
 
             case "view.modelagem.cadastros.Cadastros":
+
+            case "view.cadastro.Cadastro":
                 Main.getJanelas().add(new Home());
                 break;
 

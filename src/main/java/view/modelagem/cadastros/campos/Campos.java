@@ -3,7 +3,6 @@ package view.modelagem.cadastros.campos;
 import controle.ComboboxUtil;
 import controle.DaoUtil;
 import controle.JFrameUtil;
-import controle.enums.TipoCampoEnum;
 import exception.DaoException;
 import listener.home.VoltarListener;
 import listener.modelagem.cadastros.campos.AdicionarListener;
@@ -109,7 +108,6 @@ public class Campos extends JFrame {
 
             for (Map<String, Object> campo: camposList){
                 String ordemLabel = "";
-                boolean agrupador = false;
                 Integer agrupadorId = null;
                 String colunaOrdem = "ordem";
 
@@ -121,10 +119,6 @@ public class Campos extends JFrame {
                     ordemLabel = agrupadorLabelList.get(0).get("label").toString() + " - ";
                 }
                 ordemLabel = ordemLabel + campo.get(colunaOrdem).toString();
-
-                if(campo.get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.AGRUPADOR.getDescricao())){
-                    agrupador = true;
-                }
 
                 c.insets = new Insets(0, 20, 0, 0);
                 c.gridy++;
@@ -164,7 +158,7 @@ public class Campos extends JFrame {
 
                 c.gridx++;
                 JButton excluir = new JButton("Excluir");
-                excluir.addActionListener(new ExcluirListener(this, Integer.valueOf(campo.get("idcadastro").toString()), Integer.valueOf(campo.get("id").toString()), Integer.valueOf(campo.get(colunaOrdem).toString()), agrupadorId, agrupador));
+                excluir.addActionListener(new ExcluirListener(this, Integer.valueOf(campo.get("idcadastro").toString()), Integer.valueOf(campo.get("id").toString()), Integer.valueOf(campo.get(colunaOrdem).toString()), agrupadorId, tipoCampo.getText()));
                 jPanel.add(excluir, c);
 
                 if(String.valueOf(campo.get("nativo")).equalsIgnoreCase("true")){

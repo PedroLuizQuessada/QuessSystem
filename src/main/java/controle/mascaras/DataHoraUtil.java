@@ -38,4 +38,21 @@ public class DataHoraUtil implements KeyListener {
     public void keyReleased(KeyEvent e) {
 
     }
+
+    public String converterDataHora(){
+        String dataHora = "";
+
+        if(campo.getText().length() == 16){
+            dataHora = dataHora + campo.getText().substring(6) + "-";
+            dataHora = dataHora + campo.getText().substring(3, 5) + "-";
+            dataHora = dataHora + campo.getText().substring(0, 2);
+            dataHora = dataHora + campo.getText().substring(10);
+            dataHora = dataHora + ":00";
+        }
+        else {
+            campo.setText("");
+        }
+
+        return dataHora;
+    }
 }
