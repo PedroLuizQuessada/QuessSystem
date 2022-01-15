@@ -103,8 +103,9 @@ public class CriarListener implements ActionListener {
                 colunasList.add(coluna.get("coluna").toString());
             }
             sqlCreateTable.append(" PRIMARY KEY(id))");
-            sqlInsert = new StringBuilder(sqlInsert.substring(0, sqlInsert.length() - 3) + ") VALUES (");
+            sqlInsert = new StringBuilder(sqlInsert.substring(0, sqlInsert.length() - 2) + ") VALUES (");
 
+            colunasList.remove(coluna.getText());
             List<Map<String, Object>> infosTabela = daoUtil.select(String.format("SELECT * FROM %s", tabelaCadastro), colunasList);
 
             daoUtil.drop(String.format("DROP TABLE %s", tabelaCadastro));
@@ -113,15 +114,19 @@ public class CriarListener implements ActionListener {
             for(Map<String, Object> infoTabela: infosTabela) {
                 StringBuilder sqlInsertLinha = new StringBuilder(sqlInsert.toString());
                 for (Map<String, Object> coluna : colunas) {
-                    if (!coluna.get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.AGRUPADOR.getDescricao())) {
-                        String info = infoTabela.get(coluna).toString();
-                        if (!coluna.get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.NUMERICO.getDescricao())) {
-                            info = "'" + infoTabela.get(coluna) + "'";
+                    if (!coluna.get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.AGRUPADOR.getDescricao()) && !coluna.get("coluna").equals(this.coluna.getText())) {
+                        String info = "null";
+                        try {
+                            info = infoTabela.getOrDefault(coluna.getOrDefault("coluna", "null"), "null").toString();
+                        }
+                        catch (NullPointerException exception){}
+                        if (!coluna.get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.NUMERICO.getDescricao()) && !info.equals("null")) {
+                            info = "'" + info + "'";
                         }
                         sqlInsertLinha.append(info).append(", ");
                     }
                 }
-                sqlInsertLinha = new StringBuilder(sqlInsertLinha.substring(0, sqlInsertLinha.length() - 3));
+                sqlInsertLinha = new StringBuilder(sqlInsertLinha.substring(0, sqlInsertLinha.length() - 2));
                 daoUtil.insert(sqlInsertLinha + ")");
             }
 

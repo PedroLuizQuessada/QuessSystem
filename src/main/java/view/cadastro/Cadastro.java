@@ -8,6 +8,7 @@ import controle.mascaras.DataHoraUtil;
 import controle.mascaras.DataUtil;
 import controle.mascaras.NumericoUtil;
 import exception.DaoException;
+import listener.cadastro.AdicionarListener;
 import listener.cadastro.BuscarListener;
 import listener.cadastro.ExcluirListener;
 import listener.home.VoltarListener;
@@ -29,18 +30,24 @@ public class Cadastro extends JFrame {
     private final List<Map<String, JComponent>> camposPesquisaveis = new ArrayList<>();
 
     private final int idCadastro;
-    private final String nomeCadastro;
+    private String tabelaCadastro = "";
 
-    public Cadastro(int idCadastro, String nomeCadastro){
+    public Cadastro(int idCadastro) {
         this.idCadastro = idCadastro;
-        this.nomeCadastro = nomeCadastro;
 
-        carregarCabecalho(jPanel);
-        carregarRegistros(String.format("SELECT * FROM %s order BY id", nomeCadastro));
+        try {
+            List<Map<String, Object>> tabelaCadastroList = daoUtil.select(String.format("SELECT tabela FROM CADASTROS WHERE id = %d", idCadastro), Collections.singletonList("tabela"));
+            this.tabelaCadastro = tabelaCadastroList.get(0).get("tabela").toString();
+
+            carregarCabecalho(jPanel);
+            carregarRegistros(String.format("SELECT * FROM %s order BY id", tabelaCadastro));
+        } catch (DaoException exception) {
+            JOptionPane.showMessageDialog(jPanel, exception.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
 
         JScrollPane scroll = new JScrollPane(jPanel);
         add(scroll);
-        jFrameUtil.configurarJanela(this, Main.getImageIcon(), nomeCadastro, 1200, 700);
+        jFrameUtil.configurarJanela(this, Main.getImageIcon(), tabelaCadastro, 1200, 700);
     }
 
     private void carregarCabecalho(JPanel jPanel) {
@@ -48,13 +55,12 @@ public class Cadastro extends JFrame {
             List<Map<String, Object>> camposPesquisaveis = daoUtil.select(String.format("SELECT id, label, coluna, tipo FROM CAMPOSCADASTROS WHERE pesquisavel = true AND idcadastro = %d", idCadastro), Arrays.asList("id", "label", "coluna", "tipo"));
             jPanel.setLayout(new GridBagLayout());
 
-            for (int i = 0; i < camposPesquisaveis.size(); i++){
-                if(i == 0){
+            for (int i = 0; i < camposPesquisaveis.size(); i++) {
+                if (i == 0) {
                     c.insets = new Insets(0, 20, 0, 0);
                     c.gridx = 0;
                     c.gridy = 0;
-                }
-                else {
+                } else {
                     c.insets = new Insets(0, 40, 0, 0);
                     c.gridx++;
                 }
@@ -62,29 +68,29 @@ public class Cadastro extends JFrame {
                 jPanel.add(new JLabel(camposPesquisaveis.get(i).get("label").toString()), c);
             }
 
-            for (int i = 0; i < camposPesquisaveis.size(); i++){
+            for (int i = 0; i < camposPesquisaveis.size(); i++) {
                 Map<String, JComponent> mapCampoPesquisavel = new HashMap<>();
                 JComponent filtro;
 
-                if(camposPesquisaveis.get(i).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.COMBOBOX.getDescricao()) || camposPesquisaveis.get(i).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.RADIO.getDescricao())){
+                if (camposPesquisaveis.get(i).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.COMBOBOX.getDescricao())) {
                     JComboBox<String> filtroCombobox = new JComboBox<>();
-                    comboboxUtil.carregarInfosCombobox(Integer.parseInt(camposPesquisaveis.get(i).get("id").toString()), filtroCombobox);
+                    comboboxUtil.carregarOpcoesCombobox(Integer.parseInt(camposPesquisaveis.get(i).get("id").toString()), filtroCombobox, false);
                     filtro = filtroCombobox;
-                }
-                else if(camposPesquisaveis.get(i).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.CHECKBOX.getDescricao())){
+                } else if (camposPesquisaveis.get(i).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.RADIO.getDescricao())) {
+                    JComboBox<String> filtroCombobox = new JComboBox<>();
+                    comboboxUtil.carregarOpcoesCombobox(Integer.parseInt(camposPesquisaveis.get(i).get("id").toString()), filtroCombobox, true);
+                    filtro = filtroCombobox;
+                } else if (camposPesquisaveis.get(i).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.CHECKBOX.getDescricao())) {
                     filtro = new JCheckBox();
-                }
-                else {
+                } else {
                     JTextField filtroTexto = new JTextField();
                     filtroTexto.setColumns(7);
 
-                    if(camposPesquisaveis.get(i).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.NUMERICO.getDescricao())){
+                    if (camposPesquisaveis.get(i).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.NUMERICO.getDescricao())) {
                         filtroTexto.addKeyListener(new NumericoUtil(filtroTexto));
-                    }
-                    else if(camposPesquisaveis.get(i).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.DATA.getDescricao())){
+                    } else if (camposPesquisaveis.get(i).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.DATA.getDescricao())) {
                         filtroTexto.addKeyListener(new DataUtil(filtroTexto));
-                    }
-                    else if(camposPesquisaveis.get(i).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.DATAHORA.getDescricao())){
+                    } else if (camposPesquisaveis.get(i).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.DATAHORA.getDescricao())) {
                         filtroTexto.addKeyListener(new DataHoraUtil(filtroTexto));
                     }
 
@@ -94,12 +100,11 @@ public class Cadastro extends JFrame {
                 mapCampoPesquisavel.put(camposPesquisaveis.get(i).get("coluna").toString(), filtro);
                 this.camposPesquisaveis.add(mapCampoPesquisavel);
 
-                if(i == 0){
+                if (i == 0) {
                     c.insets = new Insets(0, 20, 30, 0);
                     c.gridx = 0;
                     c.gridy++;
-                }
-                else {
+                } else {
                     c.insets = new Insets(0, 40, 30, 0);
                     c.gridx++;
                 }
@@ -114,90 +119,96 @@ public class Cadastro extends JFrame {
 
             c.gridx++;
             JButton adicionarRegistro = new JButton("Adicionar registro");
-            //adicionarRegistro.addActionListener();
+            adicionarRegistro.addActionListener(new AdicionarListener(this, idCadastro, null, null));
             jPanel.add(adicionarRegistro, c);
 
             c.gridx++;
             JButton voltar = new JButton("Voltar");
             voltar.addActionListener(new VoltarListener(this));
             jPanel.add(voltar, c);
-        }
-        catch (DaoException exception){
+        } catch (DaoException exception) {
             JOptionPane.showMessageDialog(jPanel, exception.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    public void carregarRegistros(String sql){
-        for(JComponent campo: campos){
+    public void carregarRegistros(String sql) throws DaoException {
+        for (JComponent campo : campos) {
             jPanel.remove(campo);
         }
         campos.clear();
 
-        try{
-            List<String> camposPesquisaveis = new ArrayList<>();
-            for (Map<String, JComponent> campoPesquisavel: this.camposPesquisaveis){
-                for(Map.Entry<String, JComponent> valores: campoPesquisavel.entrySet()){
-                    camposPesquisaveis.add(valores.getKey());
-                }
+        List<String> camposPesquisaveis = new ArrayList<>();
+        for (Map<String, JComponent> campoPesquisavel : this.camposPesquisaveis) {
+            for (Map.Entry<String, JComponent> valores : campoPesquisavel.entrySet()) {
+                camposPesquisaveis.add(valores.getKey());
             }
+        }
 
-            List<Map<String, Object>> registros = daoUtil.select(sql, camposPesquisaveis);
+        List<Map<String, Object>> registros = daoUtil.select(sql, camposPesquisaveis);
 
-            for(Map<String, Object> registro: registros){
-                for (int i = 0; i < camposPesquisaveis.size(); i++){
-                    if(i == 0){
-                        c.insets = new Insets(0, 20, 0, 0);
-                        c.gridx = 0;
-                        c.gridy++;
-                    }
-                    else {
-                        c.insets = new Insets(0, 40, 0, 0);
-                        c.gridx++;
-                    }
-
-                    JComponent campo;
-                    List<Map<String, Object>> tipoCampoList = daoUtil.select(String.format("SELECT tipo FROM CAMPOSCADASTROS WHERE idcadastro = %d AND coluna = '%s'", idCadastro, camposPesquisaveis.get(i)), Collections.singletonList("tipo"));
-                    if(tipoCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.CHECKBOX.getDescricao())){
-                        JCheckBox campoCheckbox = new JCheckBox();
-                        campoCheckbox.setSelected(registro.get(camposPesquisaveis.get(i)).toString().equalsIgnoreCase("true"));
-                        campo = campoCheckbox;
-                    }
-                    else {
-                        JTextField campoTexto = new JTextField();
-                        campoTexto.setColumns(7);
-                        campoTexto.setText(registro.get(camposPesquisaveis.get(i)).toString());
-                        campo = campoTexto;
-                    }
-
-
+        for (Map<String, Object> registro : registros) {
+            for (int i = 0; i < camposPesquisaveis.size(); i++) {
+                if (i == 0) {
                     c.insets = new Insets(0, 20, 0, 0);
                     c.gridx = 0;
                     c.gridy++;
-                    campo.setEnabled(false);
-                    jPanel.add(campo, c);
-
-                    campos.add(campo);
+                } else {
+                    c.insets = new Insets(0, 40, 0, 0);
+                    c.gridx++;
                 }
 
-                c.gridx++;
-                JButton consultar = new JButton("Consultar");
-                //consultar.addActionListener();
-                jPanel.add(consultar, c);
+                JComponent campo;
+                List<Map<String, Object>> tipoCampoList = daoUtil.select(String.format("SELECT tipo FROM CAMPOSCADASTROS WHERE idcadastro = %d AND coluna = '%s'", idCadastro, camposPesquisaveis.get(i)), Collections.singletonList("tipo"));
+                if (tipoCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.CHECKBOX.getDescricao())) {
+                    JCheckBox campoCheckbox = new JCheckBox();
+                    campoCheckbox.setSelected(registro.get(camposPesquisaveis.get(i)).toString().equalsIgnoreCase("true"));
+                    campo = campoCheckbox;
+                } else {
+                    JTextField campoTexto = new JTextField();
+                    campoTexto.setColumns(7);
+                    try {
+                        campoTexto.setText(registro.get(camposPesquisaveis.get(i)).toString());
 
-                c.gridx++;
-                JButton excluir = new JButton("Excluir");
-                excluir.addActionListener(new ExcluirListener(idCadastro, nomeCadastro, Integer.parseInt(registro.get("id").toString())));
-                jPanel.add(excluir, c);
+                        if(tipoCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.DATAHORA.getDescricao())){
+                            DataHoraUtil dataHoraUtil = new DataHoraUtil(campoTexto);
+                            campoTexto.setText(dataHoraUtil.converterDataHoraString());
+                        }
+                        else if (tipoCampoList.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.DATA.getDescricao())) {
+                            DataUtil dataUtil = new DataUtil(campoTexto);
+                            campoTexto.setText(dataUtil.converterDataString());
+                        }
+                    }
+                    catch (NullPointerException exception){
+                        campoTexto.setText("");
+                    }
+                    campo = campoTexto;
+                }
+
+                campo.setEnabled(false);
+                jPanel.add(campo, c);
+
+                campos.add(campo);
             }
 
-            jFrameUtil.configurarJanela(this, Main.getImageIcon(), nomeCadastro, 1200, 700);
+            c.gridx++;
+            JButton consultar = new JButton("Consultar");
+            consultar.addActionListener(new AdicionarListener(this, idCadastro, tabelaCadastro, Integer.parseInt(registro.get("id").toString())));
+            jPanel.add(consultar, c);
+            campos.add(consultar);
+
+            c.gridx++;
+            JButton excluir = new JButton("Excluir");
+            excluir.addActionListener(new ExcluirListener(idCadastro, tabelaCadastro, Integer.parseInt(registro.get("id").toString())));
+            jPanel.add(excluir, c);
+            campos.add(excluir);
+
+            c.gridy++;
         }
-        catch (DaoException exception){
-            JOptionPane.showMessageDialog(jPanel, exception.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-        }
+
+        jFrameUtil.configurarJanela(this, Main.getImageIcon(), tabelaCadastro, 1200, 700);
     }
 
-    public String getNomeCadastro() {
-        return nomeCadastro;
+    public String getTabelaCadastro() {
+        return tabelaCadastro;
     }
 }

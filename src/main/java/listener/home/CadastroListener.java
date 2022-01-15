@@ -10,17 +10,15 @@ import java.awt.event.ActionListener;
 public class CadastroListener implements ActionListener {
     private final JFrame janela;
     private final int idCadastro;
-    private final String nomeCadastro;
 
-    public CadastroListener(JFrame janela, int idCadastro, String nomeCadastro) {
+    public CadastroListener(JFrame janela, int idCadastro) {
         this.janela = janela;
         this.idCadastro = idCadastro;
-        this.nomeCadastro = nomeCadastro;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         janela.dispose();
-        Main.getJanelas().add(new Cadastro(idCadastro, nomeCadastro));
+        Main.getJanelas().add(new Cadastro(idCadastro));
     }
 }

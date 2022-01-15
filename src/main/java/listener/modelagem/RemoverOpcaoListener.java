@@ -34,14 +34,14 @@ public class RemoverOpcaoListener implements ActionListener {
                 tabela = "CONFIGSCAMPOSRADIO";
             }
 
-            if(opcoesAdicionadas.getSelectedItem().equals(OpcaoComboEnum.OPCAO_COMBO_RADIO.getDescricao())){
+            if(opcoesAdicionadas.getSelectedItem().equals(OpcaoComboEnum.OPCAO_COMBOBOX_PADRAO.getDescricao())){
                 throw new OpcaoException("Necessário escolher uma opção para remover");
             }
 
             String opcoes = "";
 
             for(int i = 0; i < opcoesAdicionadas.getItemCount(); i++){
-                if(!opcoesAdicionadas.getItemAt(i).equals(OpcaoComboEnum.OPCAO_COMBO_RADIO.getDescricao()) && !opcoesAdicionadas.getItemAt(i).equals(opcoesAdicionadas.getSelectedItem())) {
+                if(!opcoesAdicionadas.getItemAt(i).equals(OpcaoComboEnum.OPCAO_COMBOBOX_PADRAO.getDescricao()) && !opcoesAdicionadas.getItemAt(i).equals(opcoesAdicionadas.getSelectedItem())) {
                     opcoes = opcoes + opcoesAdicionadas.getItemAt(i) + "_";
                 }
             }
@@ -58,7 +58,7 @@ public class RemoverOpcaoListener implements ActionListener {
 
             opcaoPadrao.removeItem(opcoesAdicionadas.getSelectedItem());
             opcoesAdicionadas.removeItem(opcoesAdicionadas.getSelectedItem());
-            opcoesAdicionadas.setSelectedItem(OpcaoComboEnum.OPCAO_COMBO_RADIO.getDescricao());
+            opcoesAdicionadas.setSelectedItem(OpcaoComboEnum.OPCAO_COMBOBOX_PADRAO.getDescricao());
 
             JOptionPane.showMessageDialog(null, "Opção removida", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         }

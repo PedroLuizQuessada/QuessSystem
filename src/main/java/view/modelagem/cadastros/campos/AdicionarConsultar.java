@@ -21,7 +21,6 @@ import java.util.List;
 public class AdicionarConsultar extends JFrame {
     private final DaoUtil daoUtil = new DaoUtil();
     private final ComboboxUtil comboboxUtil = new ComboboxUtil();
-    private final AreaTextoUtil areaTextoUtil = new AreaTextoUtil();
     private final JFrameUtil jFrameUtil = new JFrameUtil();
 
     private final JComboBox<String> ordem = new JComboBox<>();
@@ -616,7 +615,8 @@ public class AdicionarConsultar extends JFrame {
         c.gridx = 3;
         configsUtil.setValorPadraoArea(new JTextArea());
         camposConfigs.add(configsUtil.getValorPadraoArea());
-        areaTextoUtil.configurarTextArea(configsUtil.getValorPadraoArea());
+        AreaTextoUtil areaTextoUtil = new AreaTextoUtil(configsUtil.getValorPadraoArea());
+        areaTextoUtil.configurarTextArea();
         add(configsUtil.getValorPadraoArea(), c);
 
         if (idCampo != null) {
@@ -903,8 +903,8 @@ public class AdicionarConsultar extends JFrame {
             configsUtil.getOpcoesAdicionadas().removeAllItems();
             configsUtil.getOpcaoPadrao().removeAllItems();
 
-            configsUtil.getOpcoesAdicionadas().addItem(OpcaoComboEnum.OPCAO_COMBO_RADIO.getDescricao());
-            configsUtil.getOpcoesAdicionadas().setSelectedItem(OpcaoComboEnum.OPCAO_COMBO_RADIO.getDescricao());
+            configsUtil.getOpcoesAdicionadas().addItem(OpcaoComboEnum.OPCAO_COMBOBOX_PADRAO.getDescricao());
+            configsUtil.getOpcoesAdicionadas().setSelectedItem(OpcaoComboEnum.OPCAO_COMBOBOX_PADRAO.getDescricao());
             configsUtil.getOpcaoPadrao().addItem(OpcaoComboEnum.SEM_OPCAO_PADRAO.getDescricao());
             configsUtil.getOpcaoPadrao().setSelectedItem(OpcaoComboEnum.SEM_OPCAO_PADRAO.getDescricao());
 
@@ -939,8 +939,8 @@ public class AdicionarConsultar extends JFrame {
             configsUtil.getOpcoesAdicionadas().removeAllItems();
             configsUtil.getOpcaoPadrao().removeAllItems();
 
-            configsUtil.getOpcoesAdicionadas().addItem(OpcaoComboEnum.OPCAO_COMBO_RADIO.getDescricao());
-            configsUtil.getOpcoesAdicionadas().setSelectedItem(OpcaoComboEnum.OPCAO_COMBO_RADIO.getDescricao());
+            configsUtil.getOpcoesAdicionadas().addItem(OpcaoComboEnum.OPCAO_COMBOBOX_PADRAO.getDescricao());
+            configsUtil.getOpcoesAdicionadas().setSelectedItem(OpcaoComboEnum.OPCAO_COMBOBOX_PADRAO.getDescricao());
             configsUtil.getOpcaoPadrao().addItem(OpcaoComboEnum.SEM_OPCAO_PADRAO.getDescricao());
             configsUtil.getOpcaoPadrao().setSelectedItem(OpcaoComboEnum.SEM_OPCAO_PADRAO.getDescricao());
 

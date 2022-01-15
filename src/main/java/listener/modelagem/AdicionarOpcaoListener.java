@@ -48,7 +48,7 @@ public class AdicionarOpcaoListener implements ActionListener {
             String opcoes = "";
 
             for(int i = 0; i < opcoesAdicionadas.getItemCount(); i++){
-                if(!opcoesAdicionadas.getItemAt(i).equals(OpcaoComboEnum.OPCAO_COMBO_RADIO.getDescricao())) {
+                if(!opcoesAdicionadas.getItemAt(i).equals(OpcaoComboEnum.OPCAO_COMBOBOX_PADRAO.getDescricao())) {
                     opcoes = opcoes + opcoesAdicionadas.getItemAt(i) + "_";
                 }
             }

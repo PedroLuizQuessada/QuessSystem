@@ -23,7 +23,7 @@ public class OpcaoUtil {
         if(novaOpcaoTexto.length() == 0){
             throw new OpcaoException("Opção não pode ser vazia");
         }
-        if(novaOpcaoTexto.equals(OpcaoComboEnum.OPCAO_COMBO_RADIO.getDescricao()) || novaOpcaoTexto.equals(OpcaoComboEnum.SEM_OPCAO_PADRAO.getDescricao())){
+        if(novaOpcaoTexto.equals(OpcaoComboEnum.OPCAO_COMBOBOX_PADRAO.getDescricao()) || novaOpcaoTexto.equals(OpcaoComboEnum.SEM_OPCAO_PADRAO.getDescricao())){
             throw new OpcaoException("Opção inválida");
         }
 

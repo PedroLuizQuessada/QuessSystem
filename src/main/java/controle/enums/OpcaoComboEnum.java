@@ -8,7 +8,7 @@ public enum OpcaoComboEnum {
     CAMPO("Escolha um tipo de campo"),
     SEM_GERENTE("Sem gerente"),
     SEM_LIDER("Sem líder"),
-    OPCAO_COMBO_RADIO("Escolha uma opção"),
+    OPCAO_COMBOBOX_PADRAO("Escolha uma opção"),
     SEM_OPCAO_PADRAO("Sem opção padrão"),
     SEM_AGRUPADOR("Sem agrupador");
 

@@ -3,6 +3,9 @@ package controle.mascaras;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class DataHoraUtil implements KeyListener {
     private final JTextField campo;
@@ -36,14 +39,19 @@ public class DataHoraUtil implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-
+        if(campo.getText().length() == 16){
+            ValidadorDataHora dataHora = new ValidadorDataHora();
+            if (!dataHora.isValido(campo.getText())) {
+                campo.setText("");
+            }
+        }
     }
 
-    public String converterDataHora(){
+    public String converterDataHoraSql(){
         String dataHora = "";
 
         if(campo.getText().length() == 16){
-            dataHora = dataHora + campo.getText().substring(6) + "-";
+            dataHora = dataHora + campo.getText().substring(6, 10) + "-";
             dataHora = dataHora + campo.getText().substring(3, 5) + "-";
             dataHora = dataHora + campo.getText().substring(0, 2);
             dataHora = dataHora + campo.getText().substring(10);
@@ -54,5 +62,35 @@ public class DataHoraUtil implements KeyListener {
         }
 
         return dataHora;
+    }
+
+    public String converterDataHoraString(){
+        String dataHora = "";
+
+        if(campo.getText().length() == 16 || campo.getText().length() == 21){
+            dataHora = dataHora + campo.getText().substring(8, 10) + "/";
+            dataHora = dataHora + campo.getText().substring(5, 7) + "/";
+            dataHora = dataHora + campo.getText().substring(0, 4);
+            dataHora = dataHora + campo.getText().substring(10, 16);
+        }
+        else {
+            campo.setText("");
+        }
+        return dataHora;
+    }
+
+    public static class ValidadorDataHora {
+        private final String formato = "dd/MM/yyyy HH:mm";
+
+        public boolean isValido(String dateStr) {
+            DateFormat dateFormat = new SimpleDateFormat(this.formato);
+            dateFormat.setLenient(false);
+            try {
+                dateFormat.parse(dateStr);
+            } catch (ParseException e) {
+                return false;
+            }
+            return true;
+        }
     }
 }

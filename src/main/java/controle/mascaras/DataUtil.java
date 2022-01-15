@@ -3,6 +3,9 @@ package controle.mascaras;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class DataUtil implements KeyListener {
     private final JTextField campo;
@@ -13,10 +16,9 @@ public class DataUtil implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-        if(campo.getText().length() == 2 || campo.getText().length() == 5){
+        if (campo.getText().length() == 2 || campo.getText().length() == 5) {
             campo.setText(campo.getText() + "/");
-        }
-        else if(!Character.isDigit(e.getKeyChar()) || campo.getText().length() == 10){
+        } else if (!Character.isDigit(e.getKeyChar()) || campo.getText().length() == 10) {
             e.consume();
         }
     }
@@ -28,21 +30,54 @@ public class DataUtil implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-
+        if (campo.getText().length() == 10) {
+            ValidadorData data = new ValidadorData();
+            if (!data.isValido(campo.getText())) {
+                campo.setText("");
+            }
+        }
     }
 
-    public String converterData(){
+    public String converterDataSql() {
         String data = "";
 
-        if(campo.getText().length() == 10){
+        if (campo.getText().length() == 10) {
             data = data + campo.getText().substring(6) + "-";
             data = data + campo.getText().substring(3, 5) + "-";
             data = data + campo.getText().substring(0, 2);
-        }
-        else {
+        } else {
             campo.setText("");
         }
 
         return data;
+    }
+
+    public String converterDataString() {
+        String data = "";
+
+        if (campo.getText().length() == 10) {
+            data = data + campo.getText().substring(8) + "/";
+            data = data + campo.getText().substring(5, 7) + "/";
+            data = data + campo.getText().substring(0, 4);
+        } else {
+            campo.setText("");
+        }
+
+        return data;
+    }
+
+    public static class ValidadorData {
+        private final String formato = "dd/MM/yyyy";
+
+        public boolean isValido(String dateStr) {
+            DateFormat dateFormat = new SimpleDateFormat(this.formato);
+            dateFormat.setLenient(false);
+            try {
+                dateFormat.parse(dateStr);
+            } catch (ParseException e) {
+                return false;
+            }
+            return true;
+        }
     }
 }

@@ -6,6 +6,7 @@ import view.administrador.departamentos.AdicionarConsultar;
 import view.administrador.departamentos.Departamentos;
 import view.administrador.grupos.Grupos;
 import view.administrador.usuarios.Usuarios;
+import view.cadastro.Cadastro;
 import view.modelagem.cadastros.Cadastros;
 import view.modelagem.cadastros.campos.Campos;
 
@@ -69,6 +70,10 @@ public class VoltarListener implements ActionListener {
 
             case "view.modelagem.cadastros.campos.AdicionarConsultar":
                 Main.getJanelas().add(new Campos(id));
+                break;
+
+            case "view.cadastro.AdicionarConsultar":
+                Main.getJanelas().add(new Cadastro(id));
                 break;
         }
     }

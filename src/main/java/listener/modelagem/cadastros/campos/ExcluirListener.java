@@ -67,7 +67,7 @@ public class ExcluirListener implements ActionListener {
                 daoUtil.delete(String.format("DELETE FROM CONFIGSCAMPOSRADIO WHERE idcampo = %d", idCampo));
             }
             else if(tipoCampo.equalsIgnoreCase(TipoCampoEnum.AGRUPADOR.getDescricao())){
-                daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET inativo = true WHERE idcadastro = %d AND agrupador = %d", idCadastro, idCampo));
+                daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET inativo = true, vinculado = false, pesquisavel = false WHERE idcadastro = %d AND agrupador = %d", idCadastro, idCampo));
                 daoUtil.delete(String.format("DELETE FROM CONFIGSCAMPOSAGRUPADOR WHERE idcampo = %d", idCampo));
 
                 List<Map<String, Object>> idsAgrupados = daoUtil.select(String.format("SELECT id, tipo FROM CAMPOSCADASTROS WHERE idcadastro = %d AND agrupador = %d", idCadastro, idCampo), Arrays.asList("id", "tipo"));
@@ -101,7 +101,7 @@ public class ExcluirListener implements ActionListener {
                 daoUtil.drop(String.format("DROP TABLE agrupador_cad_%d", idCampo));
             }
 
-            daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET inativo = true WHERE id = %d", idCampo));
+            daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET inativo = true, vinculado = false, pesquisavel = false WHERE id = %d", idCampo));
             janela.carregarCampos(String.format("SELECT id, idcadastro, ordem, label, coluna, tipo, nativo, agrupador, ordemagrupador FROM CAMPOSCADASTROS WHERE idcadastro = %d AND inativo <> true ORDER BY ordem, ordemagrupador", idCadastro));
             JOptionPane.showMessageDialog(null, "Campo excluído", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         }

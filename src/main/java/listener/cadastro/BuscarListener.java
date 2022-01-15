@@ -45,13 +45,13 @@ public class BuscarListener implements ActionListener {
                             }
                             else if(tipoCampo.equalsIgnoreCase(TipoCampoEnum.DATA.getDescricao())){
                                 DataUtil dataUtil = new DataUtil(filtro);
-                                String dataFormatada = dataUtil.converterData();
+                                String dataFormatada = dataUtil.converterDataSql();
 
                                 where = where + String.format(" AND %s = '%s' ", valores.getKey(), dataFormatada);
                             }
                             else if(tipoCampo.equalsIgnoreCase(TipoCampoEnum.DATAHORA.getDescricao())){
                                 DataHoraUtil dataHoraUtil = new DataHoraUtil(filtro);
-                                String dataHoraFormatada = dataHoraUtil.converterDataHora();
+                                String dataHoraFormatada = dataHoraUtil.converterDataHoraSql();
 
                                 where = where + String.format(" AND %s = '%s' ", valores.getKey(), dataHoraFormatada);
                             }
@@ -62,7 +62,7 @@ public class BuscarListener implements ActionListener {
                     }
                     else if (valores.getValue().getClass().equals(JComboBox.class)) {
                         JComboBox<String> filtro = (JComboBox<String>) valores.getValue();
-                        if (!filtro.getSelectedItem().toString().equalsIgnoreCase(OpcaoComboEnum.OPCAO_COMBO_RADIO.getDescricao())) {
+                        if (!filtro.getSelectedItem().toString().equalsIgnoreCase(OpcaoComboEnum.OPCAO_COMBOBOX_PADRAO.getDescricao())) {
                             where = where + String.format(" AND %s = '%s' ", valores.getKey(), filtro.getSelectedItem().toString());
                         }
                     }
@@ -74,7 +74,7 @@ public class BuscarListener implements ActionListener {
             }
 
             where = where + " order BY id";
-            janela.carregarRegistros(String.format("SELECT * FROM %s %s", janela.getNomeCadastro(), where));
+            janela.carregarRegistros(String.format("SELECT * FROM %s %s", janela.getTabelaCadastro(), where));
         }
         catch (DaoException exception){
             JOptionPane.showMessageDialog(null, exception.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
