@@ -1,6 +1,5 @@
 package listener.administrador.usuarios;
 
-import exception.DaoException;
 import view.administrador.usuarios.Usuarios;
 
 import javax.swing.*;

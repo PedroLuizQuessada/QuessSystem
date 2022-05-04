@@ -5,10 +5,7 @@ import controle.DaoUtil;
 import controle.JFrameUtil;
 import exception.DaoException;
 import listener.home.VoltarListener;
-import listener.modelagem.cadastros.campos.AdicionarListener;
-import listener.modelagem.cadastros.campos.BuscarListener;
-import listener.modelagem.cadastros.campos.ConsultarListener;
-import listener.modelagem.cadastros.campos.ExcluirListener;
+import listener.modelagem.cadastros.campos.*;
 import main.Main;
 
 import javax.swing.*;
@@ -157,6 +154,11 @@ public class Campos extends JFrame {
                 jPanel.add(consultar, c);
 
                 c.gridx++;
+                JButton regrasCondicionaisCampo = new JButton("Regras condicionais");
+                regrasCondicionaisCampo.addActionListener(new RegrasCondicionaisListener(this, Integer.valueOf(campo.get("id").toString()), idCadastro, true));
+                jPanel.add(regrasCondicionaisCampo, c);
+
+                c.gridx++;
                 JButton excluir = new JButton("Excluir");
                 excluir.addActionListener(new ExcluirListener(this, Integer.valueOf(campo.get("idcadastro").toString()), Integer.valueOf(campo.get("id").toString()), Integer.valueOf(campo.get(colunaOrdem).toString()), agrupadorId, tipoCampo.getText()));
                 jPanel.add(excluir, c);
@@ -170,6 +172,7 @@ public class Campos extends JFrame {
                 campos.add(colunaCampo);
                 campos.add(tipoCampo);
                 campos.add(consultar);
+                campos.add(regrasCondicionaisCampo);
                 campos.add(excluir);
             }
 

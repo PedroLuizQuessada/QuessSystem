@@ -58,6 +58,8 @@ public class ExcluirListener implements ActionListener {
                     daoUtil.delete(String.format("DELETE FROM CONFIGSCAMPOSAGRUPADOR WHERE idcampo = %d", Integer.parseInt(campoCadastro.get("id").toString())));
                     daoUtil.drop(String.format("DROP TABLE agrupador_cad_%d", Integer.parseInt(campoCadastro.get("id").toString())));
                 }
+
+                daoUtil.delete(String.format("DELETE FROM REGRASCONDICIONAIS WHERE cadastro = true AND (idcampo = %d OR idcampoinfo = %d)", Integer.parseInt(campoCadastro.get("id").toString()), Integer.parseInt(campoCadastro.get("id").toString())));
             }
 
             daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET inativo = true WHERE idcadastro = %d", id));
@@ -67,7 +69,6 @@ public class ExcluirListener implements ActionListener {
             JOptionPane.showMessageDialog(null, "Cadastro excluído", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         }
         catch (DaoException exception){
-            exception.printStackTrace();
             JOptionPane.showMessageDialog(null, exception.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }

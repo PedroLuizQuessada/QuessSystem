@@ -57,7 +57,7 @@ public class CriarListener implements ActionListener {
             daoUtil.insert(String.format("INSERT INTO CAMPOSCADASTROS (idcadastro, ordem, label, coluna, tipo, vinculado, bloqueado, obrigatorio, nativo, pesquisavel, ordemagrupador) VALUES (%d, 5, 'Atualizado por', 'atualizado_por', 'Numérico', false, false, false, true, true, 0)", cadastroId));
 
             List<Map<String, Object>> campoIdList = daoUtil.select("SELECT MAX(id) as id FROM CAMPOSCADASTROS", Collections.singletonList("id"));
-            Integer campoId = Integer.parseInt(campoIdList.get(0).get("id").toString());
+            int campoId = Integer.parseInt(campoIdList.get(0).get("id").toString());
 
             daoUtil.insert(String.format("INSERT INTO CONFIGSCAMPOSNUMERICO (idcampo, cadastro) VALUES (%d, true)", campoId - 4));
             daoUtil.insert(String.format("INSERT INTO CONFIGSCAMPOSDATAHORA (idcampo, cadastro) VALUES (%d, true)", campoId - 3));

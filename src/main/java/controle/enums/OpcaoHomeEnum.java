@@ -6,7 +6,7 @@ public enum OpcaoHomeEnum {
     GRUPOS("Grupos"),
     CADASTROS("Cadastros");
 
-    private String descricao;
+    private final String descricao;
 
     OpcaoHomeEnum(String descricao) {
         this.descricao = descricao;

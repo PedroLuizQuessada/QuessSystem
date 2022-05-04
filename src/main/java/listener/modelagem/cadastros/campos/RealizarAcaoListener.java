@@ -20,14 +20,12 @@ public class RealizarAcaoListener implements ActionListener {
     private final int idCampo;
     private final JButton realizarAcao;
     private final JComboBox<String> acoes;
-    private final JComboBox<String> tipo;
     private final JComboBox<String> agrupador;
 
-    public RealizarAcaoListener(Integer idCampo, JButton realizarAcao, JComboBox<String> acoes, JComboBox<String> tipo, JComboBox<String> agrupador) {
+    public RealizarAcaoListener(Integer idCampo, JButton realizarAcao, JComboBox<String> acoes, JComboBox<String> agrupador) {
         this.idCampo = idCampo;
         this.realizarAcao = realizarAcao;
         this.acoes = acoes;
-        this.tipo = tipo;
         this.agrupador = agrupador;
     }
 
@@ -90,7 +88,6 @@ public class RealizarAcaoListener implements ActionListener {
             JOptionPane.showMessageDialog(null, mensagem, "Erro", JOptionPane.INFORMATION_MESSAGE);
         }
         catch (DaoException exception){
-            exception.printStackTrace();
             JOptionPane.showMessageDialog(null, exception.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }

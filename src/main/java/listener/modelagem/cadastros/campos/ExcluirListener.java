@@ -9,7 +9,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -102,11 +101,11 @@ public class ExcluirListener implements ActionListener {
             }
 
             daoUtil.update(String.format("UPDATE CAMPOSCADASTROS SET inativo = true, vinculado = false, pesquisavel = false WHERE id = %d", idCampo));
+            daoUtil.delete(String.format("DELETE FROM REGRASCONDICIONAIS WHERE cadastro = true AND (idcampo = %d OR idcampoinfo = %d)", idCampo, idCampo));
             janela.carregarCampos(String.format("SELECT id, idcadastro, ordem, label, coluna, tipo, nativo, agrupador, ordemagrupador FROM CAMPOSCADASTROS WHERE idcadastro = %d AND inativo <> true ORDER BY ordem, ordemagrupador", idCadastro));
             JOptionPane.showMessageDialog(null, "Campo excluído", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         }
         catch (DaoException exception){
-            exception.printStackTrace();
             JOptionPane.showMessageDialog(null, exception.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }

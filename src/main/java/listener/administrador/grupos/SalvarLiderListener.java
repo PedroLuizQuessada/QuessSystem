@@ -48,7 +48,6 @@ public class SalvarLiderListener implements ActionListener {
             JOptionPane.showMessageDialog(null, "Líder atualizado", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         }
         catch (DaoException exception){
-            exception.printStackTrace();
             JOptionPane.showMessageDialog(null, exception.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }

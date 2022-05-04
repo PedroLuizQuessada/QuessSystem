@@ -19,7 +19,7 @@ public class DaoUtil {
         inicializaTabelas();
     }
 
-    private void inicializaTabelas() throws SQLException, DaoException{
+    private void inicializaTabelas() throws SQLException, DaoException {
         stmt = con.createStatement();
 
         try {
@@ -210,6 +210,21 @@ public class DaoUtil {
                     "\nordenacaocampo VARCHAR(30), " +
                     "\nidcampo INTEGER NOT NULL, " +
                     "\ncadastro BIT NOT NULL, " +
+                    "\nPRIMARY KEY(id))");
+        } catch (SQLException exception){
+            //Tabela já criada
+        }
+
+        try{
+            stmt.executeUpdate("CREATE TABLE REGRASCONDICIONAIS " +
+                    "(id INTEGER NOT NULL IDENTITY, " +
+                    "\ncadastro BIT NOT NULL, " +
+                    "\nidcampo INTEGER NOT NULL, " +
+                    "\nidcampoinfo INTEGER NOT NULL, " +
+                    "\noperador VARCHAR(10) NOT NULL, " +
+                    "\nvalor VARCHAR(30) NOT NULL, " +
+                    "\ntiporegra VARCHAR(30) NOT NULL, " +
+                    "\ngrupo INTEGER NOT NULL, " +
                     "\nPRIMARY KEY(id))");
         } catch (SQLException exception){
             //Tabela já criada

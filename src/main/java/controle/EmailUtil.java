@@ -42,7 +42,6 @@ public class EmailUtil {
             return novaSenha;
         }
         catch (Exception exception){
-            exception.printStackTrace();
             throw new EmailException();
         }
     }

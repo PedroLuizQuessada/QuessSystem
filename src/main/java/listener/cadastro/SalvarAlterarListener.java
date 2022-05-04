@@ -1,6 +1,7 @@
 package listener.cadastro;
 
 import controle.DaoUtil;
+import controle.RegrasCondicionaisUtil;
 import controle.enums.*;
 import controle.mascaras.DataHoraUtil;
 import controle.mascaras.DataUtil;
@@ -18,42 +19,47 @@ import java.util.*;
 
 public class SalvarAlterarListener implements ActionListener {
     private final DaoUtil daoUtil = new DaoUtil();
+    private final RegrasCondicionaisUtil regrasCondicionaisUtil;
 
     private final JFrame janela;
     private final Integer idCadastro;
     private final Integer idRegistro;
     private final Map<String, Object> campos;
 
-    private String sql = "";
-    private String sqlAux = "VALUES (";
-    private boolean realizarAcao = true;
-
-    public SalvarAlterarListener(JFrame janela, Integer idCadastro, Integer idRegistro, Map<String, Object> campos) {
+    public SalvarAlterarListener(JFrame janela, Integer idCadastro, Integer idRegistro, Map<String, Object> campos, RegrasCondicionaisUtil regrasCondicionaisUtil) {
         this.janela = janela;
         this.idCadastro = idCadastro;
         this.idRegistro = idRegistro;
         this.campos = campos;
+        this.regrasCondicionaisUtil = regrasCondicionaisUtil;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        String sql = "";
+        String sqlAux = "VALUES (";
+        boolean realizarAcao = true;
         String mensagemRetorno = "";
 
         try {
             List<Map<String, Object>> tabelaCadastro = daoUtil.select(String.format("SELECT tabela FROM CADASTROS WHERE id = %d", idCadastro), Collections.singletonList("tabela"));
+            String nomeCadastro = tabelaCadastro.get(0).get("tabela").toString();
 
             if (idRegistro != null) {
-                sql = String.format("UPDATE %s SET ", tabelaCadastro.get(0).get("tabela").toString());
+                sql = String.format("UPDATE %s SET ", nomeCadastro);
             } else {
-                sql = String.format("INSERT INTO %s (", tabelaCadastro.get(0).get("tabela").toString());
+                sql = String.format("INSERT INTO %s (", nomeCadastro);
             }
 
             for (Map.Entry<String, Object> campo : campos.entrySet()) {
                 String coluna = campo.getKey();
                 List<Map<String, Object>> infosCampo = daoUtil.select(String.format("SELECT id, label, tipo, obrigatorio FROM CAMPOSCADASTROS WHERE idcadastro = %d AND coluna = '%s'", idCadastro, coluna), Arrays.asList("id", "label", "tipo", "obrigatorio"));
 
+                boolean obrigatorioCondicionalmente = regrasCondicionaisUtil.verificarRegraCondicional(nomeCadastro, Integer.parseInt(infosCampo.get(0).get("id").toString()), idRegistro, TiposRegrasRegrasCondicionaisEnum.OBRIGATORIEDADE);
+
                 if (infosCampo.get(0).get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.TEXTO.getDescricao())) {
-                    if (infosCampo.get(0).get("obrigatorio") != null && infosCampo.get(0).get("obrigatorio").toString().equalsIgnoreCase("true") && ((JTextField) campo.getValue()).getText().equalsIgnoreCase("")) {
+                    if ((infosCampo.get(0).get("obrigatorio") != null && infosCampo.get(0).get("obrigatorio").toString().equalsIgnoreCase("true") && ((JTextField) campo.getValue()).getText().equalsIgnoreCase(""))
+                    || obrigatorioCondicionalmente && ((JTextField) campo.getValue()).getText().equalsIgnoreCase("")) {
                         mensagemRetorno = mensagemRetorno + String.format("%s é obrigatório!\n", infosCampo.get(0).get("label").toString());
                         realizarAcao = false;
                     }
@@ -128,7 +134,7 @@ public class SalvarAlterarListener implements ActionListener {
 
                     DataHoraUtil dataHoraUtil = new DataHoraUtil(((JTextField) campo.getValue()));
                     if (idRegistro != null) {
-                        String sqlInfo = new String();
+                        String sqlInfo;
                         if(((JTextField) campo.getValue()).getText().length() == 0){
                             sqlInfo = " = null ";
                         }
@@ -140,7 +146,7 @@ public class SalvarAlterarListener implements ActionListener {
                     } else {
                         sql = sql + campo.getKey() + ", ";
 
-                        String sqlInfo = new String();
+                        String sqlInfo;
                         if(((JTextField) campo.getValue()).getText().length() == 0){
                             sqlInfo = " null ";
                         }
@@ -182,7 +188,7 @@ public class SalvarAlterarListener implements ActionListener {
 
                     DataUtil dataUtil = new DataUtil((JTextField) campo.getValue());
                     if (idRegistro != null) {
-                        String sqlInfo = new String();
+                        String sqlInfo;
                         if(((JTextField) campo.getValue()).getText().length() == 0){
                             sqlInfo = " = null ";
                         }
@@ -194,7 +200,7 @@ public class SalvarAlterarListener implements ActionListener {
                     } else {
                         sql = sql + campo.getKey() + ", ";
 
-                        String sqlInfo = new String();
+                        String sqlInfo;
                         if(((JTextField) campo.getValue()).getText().length() == 0){
                             sqlInfo = " null ";
                         }

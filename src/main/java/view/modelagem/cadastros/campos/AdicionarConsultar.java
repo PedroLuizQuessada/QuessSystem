@@ -261,7 +261,7 @@ public class AdicionarConsultar extends JFrame {
             acoes.addActionListener(acoesListener);
 
             realizarAcao.removeActionListener(realizarAcaoListener);
-            realizarAcaoListener = new RealizarAcaoListener(idCampo, realizarAcao, acoes, tipo, configsUtil.getAgrupador());
+            realizarAcaoListener = new RealizarAcaoListener(idCampo, realizarAcao, acoes, configsUtil.getAgrupador());
             realizarAcao.addActionListener(realizarAcaoListener);
 
             Map<Boolean, String> map = carregarInfosCampo(idCampo);

@@ -69,6 +69,8 @@ public class VoltarListener implements ActionListener {
                 break;
 
             case "view.modelagem.cadastros.campos.AdicionarConsultar":
+
+            case "view.modelagem.RegrasCondicionais":
                 Main.getJanelas().add(new Campos(id));
                 break;
 

@@ -119,7 +119,7 @@ public class CriarListener implements ActionListener {
                         try {
                             info = infoTabela.getOrDefault(coluna.getOrDefault("coluna", "null"), "null").toString();
                         }
-                        catch (NullPointerException exception){}
+                        catch (NullPointerException ignored){}
                         if (!coluna.get("tipo").toString().equalsIgnoreCase(TipoCampoEnum.NUMERICO.getDescricao()) && !info.equals("null")) {
                             info = "'" + info + "'";
                         }
