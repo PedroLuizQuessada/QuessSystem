@@ -81,7 +81,7 @@ public class RegrasCondicionais extends JFrame {
         campos.clear();
 
         try {
-            List<Map<String, Object>> regras = daoUtil.select(String.format("SELECT * FROM REGRASCONDICIONAIS WHERE idcampo = %d AND cadastro = %s ORDER BY tiporegra, grupo", idCampo, cadastro), Arrays.asList("id", "operador", "valor", "idcampoinfo", "tiporegra"));
+            List<Map<String, Object>> regras = daoUtil.select(String.format("SELECT * FROM REGRASCONDICIONAIS WHERE idcampo = %d AND cadastro = %s ORDER BY tiporegra, grupo", idCampo, cadastro), Arrays.asList("id", "operador", "valor", "idcampoinfo", "tiporegra", "grupo"));
 
             for (Map<String, Object> regra: regras) {
                 c.insets = new Insets(10, 20, 0, 0);
@@ -110,7 +110,7 @@ public class RegrasCondicionais extends JFrame {
 
                 c.gridx++;
                 JComboBox<String> grupo = new JComboBox<>();
-                carregarOpcoesGrupos(grupo);
+                carregarOpcoesGrupos(String.valueOf(regra.get("grupo")), grupo);
                 jPanel.add(grupo, c);
 
                 c.gridx++;
@@ -157,7 +157,7 @@ public class RegrasCondicionais extends JFrame {
 
             c.gridx++;
             JComboBox<String> grupo = new JComboBox<>();
-            carregarOpcoesGrupos(grupo);
+            carregarOpcoesGrupos(null, grupo);
             jPanel.add(grupo, c);
 
             c.gridx++;
@@ -218,7 +218,10 @@ public class RegrasCondicionais extends JFrame {
         }
     }
 
-    private void carregarOpcoesGrupos(JComboBox<String> combobox) throws DaoException {
+    private void carregarOpcoesGrupos(String grupo, JComboBox<String> combobox) throws DaoException {
+        combobox.addItem(OpcoesPadraoRegrasCondicionaisEnum.GRUPO.getDescricao());
+        combobox.setSelectedItem(OpcoesPadraoRegrasCondicionaisEnum.GRUPO.getDescricao());
+
         List<Map<String, Object>> gruposList = daoUtil.select(String.format("SELECT MAX(grupo) AS numgrupos FROM regrascondicionais WHERE idcampo = %d AND cadastro = %s", idCampo, cadastro), Collections.singletonList("numgrupos"));
 
         int numGrupos = 1;
@@ -228,6 +231,10 @@ public class RegrasCondicionais extends JFrame {
 
         for (int i = 1; i <= numGrupos; i++) {
             combobox.addItem(String.valueOf(i));
+
+            if (grupo != null && String.valueOf(i).equals(grupo)) {
+                combobox.setSelectedItem(String.valueOf(i));
+            }
         }
     }
 }

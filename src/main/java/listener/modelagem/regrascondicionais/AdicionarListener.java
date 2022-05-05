@@ -41,7 +41,7 @@ public class AdicionarListener implements ActionListener {
         this.grupo = grupo;
         this.cadastro = cadastro;
 
-        this.regraCondicionalUtil = new RegraCondicionalUtil(tipoRegra, campoInfo, operador, valor);
+        this.regraCondicionalUtil = new RegraCondicionalUtil(tipoRegra, campoInfo, operador, valor, grupo);
     }
 
     @Override

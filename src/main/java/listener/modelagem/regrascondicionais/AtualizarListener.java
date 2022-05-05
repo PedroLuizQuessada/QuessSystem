@@ -42,7 +42,7 @@ public class AtualizarListener implements ActionListener {
         this.valor = valor;
         this.grupo = grupo;
 
-        regraCondicionalUtil = new RegraCondicionalUtil(tipoRegra, campoInfo, operador, valor);
+        regraCondicionalUtil = new RegraCondicionalUtil(tipoRegra, campoInfo, operador, valor, grupo);
     }
 
     @Override
