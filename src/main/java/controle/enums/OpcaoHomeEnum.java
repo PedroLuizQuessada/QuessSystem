@@ -1,6 +1,7 @@
 package controle.enums;
 
 public enum OpcaoHomeEnum {
+    ATUALIZARCREDENCIAIS("Atualizar credenciais"),
     USUARIOS("Usuários"),
     DEPARTAMENTOS("Departamentos"),
     GRUPOS("Grupos"),

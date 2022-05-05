@@ -36,7 +36,7 @@ public class UsuarioUtil {
             throw new UsuarioException("O login e o e-mail devem ser únicos");
         }
 
-        if(Objects.equals(departamento.getSelectedItem(), OpcaoComboEnum.DEPARTAMENTO.getDescricao())){
+        if(departamento != null && Objects.equals(departamento.getSelectedItem(), OpcaoComboEnum.DEPARTAMENTO.getDescricao())){
             throw new UsuarioException("Necessário escolher um departamento");
         }
     }

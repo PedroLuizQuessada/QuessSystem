@@ -28,6 +28,8 @@ public class VoltarListener implements ActionListener {
         janela.dispose();
 
         switch (janela.getClass().getName()){
+            case "view.AtualizarCredenciais":
+
             case "view.administrador.departamentos.Departamentos":
 
             case "view.administrador.grupos.Grupos":

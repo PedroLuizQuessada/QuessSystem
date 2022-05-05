@@ -8,6 +8,7 @@ import exception.DaoException;
 import listener.home.CadastroListener;
 import listener.home.SairListener;
 import main.Main;
+import main.UsuarioLogado;
 import view.administrador.departamentos.Departamentos;
 import view.administrador.grupos.Grupos;
 import view.administrador.usuarios.Usuarios;
@@ -32,6 +33,7 @@ public class Home extends JFrame implements ActionListener {
     private final JMenu administradorMenu = new JMenu("Administrador");
     private final JMenu modelagemMenu = new JMenu("Modelagem");
 
+    private final JMenuItem atualizarCredenciaisItem = new JMenuItem("Atualizar credenciais");
     private final JMenuItem sairItem = new JMenuItem("Sair");
     private final JMenuItem usuariosItem = new JMenuItem(OpcaoHomeEnum.USUARIOS.getDescricao());
     private final JMenuItem departamentosItem = new JMenuItem(OpcaoHomeEnum.DEPARTAMENTOS.getDescricao());
@@ -39,8 +41,14 @@ public class Home extends JFrame implements ActionListener {
     private final JMenuItem cadastrosItem = new JMenuItem(OpcaoHomeEnum.CADASTROS.getDescricao());
 
     public Home(){
+        carregarUsuarioLogado();
+
         perfilMenu.setText(Main.getUsuarioLogado().getLogin());
         jMenuBar.add(perfilMenu);
+
+        perfilMenu.add(atualizarCredenciaisItem);
+        atualizarCredenciaisItem.addActionListener(this);
+
         perfilMenu.add(sairItem);
         sairItem.addActionListener(new SairListener(this));
 
@@ -74,7 +82,10 @@ public class Home extends JFrame implements ActionListener {
             janela.dispose();
         }
 
-        if(e.getActionCommand().equalsIgnoreCase(OpcaoHomeEnum.USUARIOS.getDescricao())) {
+        if(e.getActionCommand().equalsIgnoreCase(OpcaoHomeEnum.ATUALIZARCREDENCIAIS.getDescricao())) {
+            Main.getJanelas().add(new AtualizarCredenciais());
+        }
+        else if(e.getActionCommand().equalsIgnoreCase(OpcaoHomeEnum.USUARIOS.getDescricao())) {
             Main.getJanelas().add(new Usuarios());
         }
         else if(e.getActionCommand().equalsIgnoreCase(OpcaoHomeEnum.DEPARTAMENTOS.getDescricao())) {
@@ -84,7 +95,7 @@ public class Home extends JFrame implements ActionListener {
             Main.getJanelas().add(new Grupos());
         }
         else if(e.getActionCommand().equalsIgnoreCase(OpcaoHomeEnum.CADASTROS.getDescricao())) {
-                Main.getJanelas().add(new Cadastros());
+            Main.getJanelas().add(new Cadastros());
         }
     }
 
@@ -132,6 +143,18 @@ public class Home extends JFrame implements ActionListener {
                     }
                 }
             }
+        }
+        catch (DaoException exception){
+            JOptionPane.showMessageDialog(null, exception.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void carregarUsuarioLogado() {
+        try {
+            List<Map<String, Object>> usuarioList = daoUtil.select(String.format("SELECT id, login, senha, email, adm, departamento FROM USUARIOS WHERE id = %d", Main.getUsuarioLogado().getId()), Arrays.asList("id", "login", "senha", "email", "adm", "departamento"));
+            Map<String, Object> usuario = usuarioList.get(0);
+
+            Main.setUsuarioLogado(new UsuarioLogado(Integer.parseInt(usuario.get("id").toString()), String.valueOf(usuario.get("login")), String.valueOf(usuario.get("senha")), String.valueOf(usuario.get("email")), Boolean.parseBoolean(String.valueOf(usuario.get("adm"))), Integer.parseInt(usuario.get("departamento").toString())));
         }
         catch (DaoException exception){
             JOptionPane.showMessageDialog(null, exception.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);

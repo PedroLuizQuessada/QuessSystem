@@ -57,7 +57,7 @@ public class LogarListener implements ActionListener {
             }
 
             daoUtil.update(String.format("UPDATE USUARIOS set tentativasAcesso = 0 WHERE login = '%s'", tf1.getText()));
-            Main.setUsuarioLogado(new UsuarioLogado(Integer.parseInt(usuario.get("id").toString()), (String) usuario.get("login"), Boolean.parseBoolean(String.valueOf(usuario.get("adm"))), Integer.parseInt(usuario.get("departamento").toString())));
+            Main.setUsuarioLogado(new UsuarioLogado(Integer.parseInt(usuario.get("id").toString()), String.valueOf(usuario.get("login")), String.valueOf(usuario.get("senha")), String.valueOf(usuario.get("email")), Boolean.parseBoolean(String.valueOf(usuario.get("adm"))), Integer.parseInt(usuario.get("departamento").toString())));
             jFrame.dispose();
             Main.getJanelas().add(new Home());
         }
