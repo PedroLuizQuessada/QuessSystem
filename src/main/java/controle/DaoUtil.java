@@ -229,6 +229,32 @@ public class DaoUtil {
         } catch (SQLException exception){
             //Tabela já criada
         }
+
+        try{
+            stmt.executeUpdate("CREATE TABLE AUTOMACOES " +
+                    "(id INTEGER NOT NULL IDENTITY, " +
+                    "\nnome VARCHAR(30) NOT NULL, " +
+                    "\ndescricao VARCHAR(500) NOT NULL, " +
+                    "\nhorariolimites BIT NOT NULL, " +
+                    "\nhorariolimiteinicio VARCHAR(10) NOT NULL, " +
+                    "\nhorariolimitefim VARCHAR(10) NOT NULL, " +
+                    "\nmaquinaexterna BIT NOT NULL, " +
+                    "\ndiasexecucao BIT NOT NULL, " +
+                    "\nsegunda BIT NOT NULL, " +
+                    "\nterca BIT NOT NULL, " +
+                    "\nquarta BIT NOT NULL, " +
+                    "\nquinta BIT NOT NULL, " +
+                    "\nsexta BIT NOT NULL, " +
+                    "\nsabado BIT NOT NULL, " +
+                    "\ndomingo BIT NOT NULL, " +
+                    "\nemailfalha VARCHAR(30) NOT NULL, " +
+                    "\ntipopermissao VARCHAR(30) NOT NULL, " +
+                    "\npermitidos INTEGER NOT NULL, " +
+                    "\nativo BIT NOT NULL, " +
+                    "\nPRIMARY KEY(id))");
+        } catch (SQLException exception){
+            //Tabela já criada
+        }
     }
 
     public List<Map<String, Object>> select(String sql, List<String> colunas) throws DaoException {

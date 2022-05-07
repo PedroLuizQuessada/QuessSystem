@@ -2,8 +2,8 @@ package view.modelagem.cadastros;
 
 import controle.DaoUtil;
 import controle.JFrameUtil;
+import controle.PermissaoUtil;
 import controle.enums.OpcaoComboEnum;
-import controle.validacoes.CadastroUtil;
 import controle.ComboboxUtil;
 import exception.DaoException;
 import listener.home.VoltarListener;
@@ -20,7 +20,7 @@ public class AdicionarConsultar extends JFrame {
     private final DaoUtil daoUtil = new DaoUtil();
     private final JFrameUtil jFrameUtil = new JFrameUtil();
     private final ComboboxUtil comboboxUtil = new ComboboxUtil();
-    private final CadastroUtil cadastroUtil = new CadastroUtil();
+    private final PermissaoUtil permissaoUtil = new PermissaoUtil();
 
     private final JTextField nome = new JTextField();
     private final JTextField tabela = new JTextField();
@@ -56,7 +56,7 @@ public class AdicionarConsultar extends JFrame {
         c.insets = new Insets(0, 70, 0, 0);
         c.gridx++;
         comboboxUtil.carregarTiposPermissao(tipoPermissao);
-        tipoPermissao.addActionListener(new TipoPermissaoListener(tipoPermissao, permitidos));
+        tipoPermissao.addActionListener(new PermissaoUtil(tipoPermissao, permitidos));
         add(tipoPermissao, c);
 
         c.gridx++;
@@ -123,7 +123,7 @@ public class AdicionarConsultar extends JFrame {
         nome.setText(String.valueOf(infosCadastro.get("nome")));
         tabela.setText(String.valueOf(infosCadastro.get("tabela")));
         tipoPermissao.setSelectedItem(String.valueOf(infosCadastro.get("tipopermissao")));
-        permitidos.setSelectedItem(cadastroUtil.carregaPermitidosNome(tipoPermissao.getSelectedItem().toString(), Integer.parseInt(String.valueOf(infosCadastro.get("permitidos")))));
+        permitidos.setSelectedItem(permissaoUtil.carregaPermitidosNome(tipoPermissao.getSelectedItem().toString(), Integer.parseInt(String.valueOf(infosCadastro.get("permitidos")))));
     }
 
     public JTextField getNome() {

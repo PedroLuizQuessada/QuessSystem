@@ -19,11 +19,9 @@ public class DataHoraUtil implements KeyListener {
         if(campo.getText().length() == 2 || campo.getText().length() == 5){
             campo.setText(campo.getText() + "/");
         }
-
         else if(campo.getText().length() == 10){
             campo.setText(campo.getText() + " ");
         }
-
         else if(campo.getText().length() == 13){
             campo.setText(campo.getText() + ":");
         }
@@ -79,10 +77,10 @@ public class DataHoraUtil implements KeyListener {
         return dataHora;
     }
 
-    public static class ValidadorDataHora {
+    private static class ValidadorDataHora {
         private final String formato = "dd/MM/yyyy HH:mm";
 
-        public boolean isValido(String dateStr) {
+        private boolean isValido(String dateStr) {
             DateFormat dateFormat = new SimpleDateFormat(this.formato);
             dateFormat.setLenient(false);
             try {

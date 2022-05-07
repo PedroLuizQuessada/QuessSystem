@@ -1,7 +1,9 @@
 package controle.validacoes;
 
 import controle.DaoUtil;
+import controle.EmailUtil;
 import controle.enums.OpcaoComboEnum;
+import exception.EmailException;
 import exception.validacoes.UsuarioException;
 import exception.DaoException;
 
@@ -13,6 +15,7 @@ import java.util.Objects;
 
 public class UsuarioUtil {
     private final DaoUtil daoUtil = new DaoUtil();
+    private final EmailUtil emailUtil = new EmailUtil();
 
     public void validarUsuario(Integer id, JTextField login, JPasswordField senha, JTextField email, JComboBox<String> departamento) throws UsuarioException, DaoException {
         if(login.getText().length() < 5){
@@ -27,7 +30,10 @@ public class UsuarioUtil {
             throw new UsuarioException("A senha deve ter pelo menos 5 caracteres");
         }
 
-        if(!email.getText().contains("@") || !email.getText().contains(".com")){
+        try {
+            emailUtil.validarEmail(email.getText());
+        }
+        catch (EmailException exception) {
             throw new UsuarioException("E-mail inválido");
         }
 

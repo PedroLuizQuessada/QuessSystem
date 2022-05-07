@@ -66,10 +66,10 @@ public class DataUtil implements KeyListener {
         return data;
     }
 
-    public static class ValidadorData {
+    private static class ValidadorData {
         private final String formato = "dd/MM/yyyy";
 
-        public boolean isValido(String dateStr) {
+        private boolean isValido(String dateStr) {
             DateFormat dateFormat = new SimpleDateFormat(this.formato);
             dateFormat.setLenient(false);
             try {

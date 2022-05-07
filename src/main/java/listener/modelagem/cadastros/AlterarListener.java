@@ -1,6 +1,7 @@
 package listener.modelagem.cadastros;
 
 import controle.DaoUtil;
+import controle.PermissaoUtil;
 import controle.validacoes.CadastroUtil;
 import exception.DaoException;
 import exception.validacoes.CadastroException;
@@ -12,6 +13,7 @@ import java.awt.event.ActionListener;
 public class AlterarListener implements ActionListener {
     private final DaoUtil daoUtil = new DaoUtil();
     private final CadastroUtil cadastroUtil = new CadastroUtil();
+    private final PermissaoUtil permissaoUtil = new PermissaoUtil();
 
     private final Integer id;
     private final JTextField nome;
@@ -29,7 +31,7 @@ public class AlterarListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         try {
             cadastroUtil.validarCadastro(id, nome, null);
-            daoUtil.update(String.format("UPDATE CADASTROS SET nome = '%s', tipoPermissao = '%s', permitidos = %d WHERE id = %d", nome.getText(), tipoPermissao.getSelectedItem().toString(), cadastroUtil.carregaPermitidosId(tipoPermissao.getSelectedItem().toString(), permitidos.getSelectedItem().toString()), id));
+            daoUtil.update(String.format("UPDATE CADASTROS SET nome = '%s', tipoPermissao = '%s', permitidos = %d WHERE id = %d", nome.getText(), tipoPermissao.getSelectedItem().toString(), permissaoUtil.carregaPermitidosId(tipoPermissao.getSelectedItem().toString(), permitidos.getSelectedItem().toString()), id));
             JOptionPane.showMessageDialog(null, "Cadastro alterado", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         }
         catch (CadastroException | DaoException exception){

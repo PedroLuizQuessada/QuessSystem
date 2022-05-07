@@ -5,6 +5,7 @@ public enum OpcaoHomeEnum {
     USUARIOS("Usuários"),
     DEPARTAMENTOS("Departamentos"),
     GRUPOS("Grupos"),
+    AUTOMACOES("Automações"),
     CADASTROS("Cadastros");
 
     private final String descricao;

@@ -1,6 +1,7 @@
 package listener.modelagem.cadastros;
 
 import controle.DaoUtil;
+import controle.PermissaoUtil;
 import controle.validacoes.CadastroUtil;
 import exception.DaoException;
 import exception.validacoes.CadastroException;
@@ -17,6 +18,7 @@ import java.util.Map;
 public class CriarListener implements ActionListener {
     private final DaoUtil daoUtil = new DaoUtil();
     private final CadastroUtil cadastroUtil = new CadastroUtil();
+    private final PermissaoUtil permissaoUtil = new PermissaoUtil();
 
     private final AdicionarConsultar janela;
     private final JTextField nome;
@@ -45,7 +47,7 @@ public class CriarListener implements ActionListener {
                     "\natualizado_por INTEGER, " +
                     "\nPRIMARY KEY(id))", tabela.getText()));
 
-            daoUtil.insert(String.format("INSERT INTO CADASTROS (nome, tabela, tipopermissao, permitidos) VALUES ('%s', '%s', '%s', %d)", nome.getText(), tabela.getText(), tipoPermissao.getSelectedItem().toString(), cadastroUtil.carregaPermitidosId(tipoPermissao.getSelectedItem().toString(), permitidos.getSelectedItem().toString())));
+            daoUtil.insert(String.format("INSERT INTO CADASTROS (nome, tabela, tipopermissao, permitidos) VALUES ('%s', '%s', '%s', %d)", nome.getText(), tabela.getText(), tipoPermissao.getSelectedItem().toString(), permissaoUtil.carregaPermitidosId(tipoPermissao.getSelectedItem().toString(), permitidos.getSelectedItem().toString())));
 
             List<Map<String, Object>> cadastroIdList = daoUtil.select("SELECT MAX(id) AS id FROM CADASTROS", Collections.singletonList("id"));
             int cadastroId = Integer.parseInt(cadastroIdList.get(0).get("id").toString());

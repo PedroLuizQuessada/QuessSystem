@@ -1,6 +1,7 @@
 package controle;
 
 import exception.EmailException;
+import exception.validacoes.UsuarioException;
 
 import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
@@ -54,5 +55,11 @@ public class EmailUtil {
         }
 
         return senha.toString();
+    }
+
+    public void validarEmail(String email) throws EmailException {
+        if(!email.contains("@") || !email.contains(".com")){
+            throw new EmailException();
+        }
     }
 }

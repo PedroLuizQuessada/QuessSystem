@@ -2,6 +2,7 @@ package listener.home;
 
 import main.Main;
 import view.Home;
+import view.administrador.automacoes.Automacoes;
 import view.administrador.departamentos.AdicionarConsultar;
 import view.administrador.departamentos.Departamentos;
 import view.administrador.grupos.Grupos;
@@ -35,6 +36,8 @@ public class VoltarListener implements ActionListener {
             case "view.administrador.grupos.Grupos":
 
             case "view.administrador.usuarios.Usuarios":
+
+            case "view.administrador.automacoes.Automacoes":
 
             case "view.modelagem.cadastros.Cadastros":
 
@@ -78,6 +81,18 @@ public class VoltarListener implements ActionListener {
 
             case "view.cadastro.AdicionarConsultar":
                 Main.getJanelas().add(new Cadastro(id));
+                break;
+
+            case "view.administrador.automacoes.AdicionarConsultar":
+                switch (Main.getJanelas().get(Main.getJanelas().size() - 2).getClass().getName()){
+                    case "view.administrador.automacoes.Automacoes":
+                        Main.getJanelas().add(new Automacoes());
+                        break;
+
+                    case "src.main.java.view.Home":
+                        Main.getJanelas().add(new Home());
+                        break;
+                }
                 break;
         }
     }
