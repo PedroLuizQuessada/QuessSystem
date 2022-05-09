@@ -45,13 +45,18 @@ public class ExcelUtil {
             headerCell.setCellStyle(headerStyle);
         }
 
+        int linhas = 0;
         for (List<String> info: infos) {
-            Row linha = sheet.createRow(infos.indexOf(info) + 1);
+            linhas = linhas + 1;
+            Row linha = sheet.createRow(linhas);
 
             for (int i = 0; i < info.size(); i++) {
                 Cell cell = linha.createCell(i);
                 cell.setCellValue(info.get(i));
                 cell.setCellStyle(style);
+
+                System.out.println("VALOR RECEBIDO " + info.get(i));
+                System.out.println("VALOR GUARDADO " + cell.getStringCellValue());
             }
         }
         
