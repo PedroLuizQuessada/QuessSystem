@@ -1,4 +1,3 @@
-*.jar
 .idea/
 QuessSystem.iml
 target/
