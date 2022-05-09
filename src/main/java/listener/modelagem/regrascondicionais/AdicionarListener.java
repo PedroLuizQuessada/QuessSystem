@@ -6,7 +6,6 @@ import exception.DaoException;
 import exception.validacoes.RegraCondicionalException;
 import main.Main;
 import view.modelagem.RegrasCondicionais;
-import view.modelagem.cadastros.AdicionarConsultar;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

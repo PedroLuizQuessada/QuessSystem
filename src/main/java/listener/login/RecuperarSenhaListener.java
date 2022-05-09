@@ -54,7 +54,8 @@ public class RecuperarSenhaListener implements ActionListener, Runnable {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    String novaSenha = emailUtil.enviarSenha(emails.get(0).get("email").toString());
+                    String novaSenha = senhaUtil.geraSenha();
+                    emailUtil.enviarEmail(emails.get(0).get("email").toString(), "Nova senha", "Sua nova senha é: " + novaSenha, null);
                     String senhaCriptografada = senhaUtil.criptografar(novaSenha);
 
                     daoUtil.update(String.format("UPDATE usuarios SET senha = '%s' WHERE login = '%s'", senhaCriptografada, usuario.getText()));

@@ -1,7 +1,6 @@
 package listener.administrador.automacoes;
 
-import controle.DaoUtil;
-import controle.PermissaoUtil;
+import controle.*;
 import controle.validacoes.AutomacaoUtil;
 import exception.DaoException;
 import exception.validacoes.AutomacaoException;
@@ -64,8 +63,8 @@ public class AlterarListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         try {
             automacaoUtil.validarAutomacao(id, nome, horarioLimites, horarioLimiteInicio, horarioLimiteFim, emailFalha);
-
             daoUtil.update(String.format("UPDATE AUTOMACOES SET nome = '%s', descricao = '%s', horariolimites = %s, horariolimiteinicio = '%s', horariolimitefim = '%s', maquinaexterna = %s, diasexecucao = %s, segunda = %s, terca = %s, quarta = %s, quinta = %s, sexta = %s, sabado = %s, domingo = %s, emailfalha = '%s', tipopermissao = '%s', permitidos = %d, ativo = %s WHERE id = %d", nome.getText(), descricao.getText(), horarioLimites.isSelected(), horarioLimiteInicio.getText(), horarioLimiteFim.getText(), maquinaExterna.isSelected(), diasExecucao.isSelected(), segunda.isSelected(), terca.isSelected(), quarta.isSelected(), quinta.isSelected(), sexta.isSelected(), sabado.isSelected(), domingo.isSelected(), emailFalha.getText(), tipoPermissao.getSelectedItem(), permissaoUtil.carregaPermitidosId(tipoPermissao.getSelectedItem().toString(), permitidos.getSelectedItem().toString()), ativo.isSelected(), id));
+
             JOptionPane.showMessageDialog(null, "Automação alterada", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         }
         catch (DaoException | AutomacaoException exception) {

@@ -1,24 +1,19 @@
 package controle;
 
 import exception.EmailException;
-import exception.validacoes.UsuarioException;
 
-import javax.mail.Message;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import java.io.File;
 import java.util.Properties;
-import java.util.Random;
 
 public class EmailUtil {
-    private final String LETRAS = "abcdefghijklmnopqrstuvwxyz";
-    private final char[] CARACTERES = (LETRAS + LETRAS.toUpperCase() + "0123456789").toCharArray();
+    private final ParametrosUtil parametrosUtil = new ParametrosUtil();
 
-    private final String usuarioEmail = "quesssystems@gmail.com";
-
-    public String enviarSenha(String destinatario) throws EmailException {
+    public void enviarEmail(String destinatario, String assunto, String mensagem, File anexo) throws EmailException {
         try {
             Properties prop = System.getProperties();
             prop.put("mail.smtp.auth", true);
@@ -28,33 +23,36 @@ public class EmailUtil {
 
             Session session = Session.getInstance(prop, new javax.mail.Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(usuarioEmail, "mottaquessadalol12");
+                    return new PasswordAuthentication(parametrosUtil.getEmailSistema(), parametrosUtil.getSenhaEmailSistema());
                 }
             });
             MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(usuarioEmail));
+            message.setFrom(new InternetAddress(parametrosUtil.getEmailSistema()));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(destinatario));
-            message.setSubject("Nova senha");
+            message.setSubject(assunto);
 
-            String novaSenha = geraSenha();
-            message.setText("Sua nova senha é: " + novaSenha);
+            if (anexo != null) {
+                MimeBodyPart attachmentPart = new MimeBodyPart();
+                attachmentPart.attachFile(anexo);
+
+                BodyPart messageBodyPart = new MimeBodyPart();
+                messageBodyPart.setText(mensagem);
+
+                Multipart multipart = new MimeMultipart();
+                multipart.addBodyPart(messageBodyPart);
+                multipart.addBodyPart(attachmentPart);
+
+                message.setContent(multipart);
+            }
+            else {
+                message.setText(mensagem);
+            }
+
             Transport.send(message);
-
-            return novaSenha;
         }
         catch (Exception exception){
             throw new EmailException();
         }
-    }
-
-    private String geraSenha(){
-        StringBuilder senha = new StringBuilder();
-
-        for (int i = 0; i <  8; i++){
-            senha.append(CARACTERES[new Random().nextInt(CARACTERES.length)]);
-        }
-
-        return senha.toString();
     }
 
     public void validarEmail(String email) throws EmailException {

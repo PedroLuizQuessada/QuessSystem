@@ -20,7 +20,7 @@ public class Main {
         new Main();
     }
 
-    public Main() {
+    private Main() {
         try {
             daoUtil.conectarBd();
 

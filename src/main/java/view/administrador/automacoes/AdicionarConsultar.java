@@ -353,4 +353,8 @@ public class AdicionarConsultar extends JFrame {
     public JCheckBox getAtivo() {
         return ativo;
     }
+
+    public JButton getjButton() {
+        return jButton;
+    }
 }

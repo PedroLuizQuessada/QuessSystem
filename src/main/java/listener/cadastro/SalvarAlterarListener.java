@@ -36,7 +36,7 @@ public class SalvarAlterarListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String sql = "";
+        String sql;
         String sqlAux = "VALUES (";
         boolean realizarAcao = true;
         String mensagemRetorno = "";

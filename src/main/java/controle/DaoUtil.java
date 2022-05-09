@@ -8,13 +8,14 @@ import java.util.*;
 
 public class DaoUtil {
     private final SenhaUtil senhaUtil = new SenhaUtil();
+    private final ParametrosUtil parametrosUtil = new ParametrosUtil();
 
     private static Connection con;
     private Statement stmt;
 
     public void conectarBd() throws ClassNotFoundException, SQLException, DaoException {
         Class.forName("org.hsql.jdbcDriver");
-        con = DriverManager.getConnection("jdbc:HypersonicSQL:hsql://localhost:8080", "messinovasco", "Mrlouiz12");
+        con = DriverManager.getConnection("jdbc:HypersonicSQL:hsql://" + parametrosUtil.getServidor(), parametrosUtil.getServidorUsuario(), parametrosUtil.getServidorSenha());
 
         inicializaTabelas();
     }
@@ -35,8 +36,8 @@ public class DaoUtil {
                     "\nnativo BIT, " +
                     "\nPRIMARY KEY(id))");
 
-            String senhaAdm = senhaUtil.criptografar("Mrlouiz12");
-            insert(String.format("INSERT INTO USUARIOS (login, senha, email, tentativasAcesso, adm, gerente, departamento, nativo) VALUES ('mrlouiz', '%s', 'quesssystem@gmail.com', 0, true, true, 0, true)", senhaAdm));
+            String senhaAdm = senhaUtil.criptografar(parametrosUtil.getAdmSenha());
+            insert(String.format("INSERT INTO USUARIOS (login, senha, email, tentativasAcesso, adm, gerente, departamento, nativo) VALUES ('%s', '%s', '%s', 0, true, true, 0, true)", parametrosUtil.getAdmLogin(), senhaAdm, parametrosUtil.getAdmEmail()));
         } catch (SQLException exception) {
             //Tabela já criada
         }

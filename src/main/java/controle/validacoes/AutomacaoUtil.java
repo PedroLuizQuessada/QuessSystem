@@ -28,6 +28,13 @@ public class AutomacaoUtil {
         }
 
         if (horarioLimites.isSelected()) {
+            if (horarioLimiteInicio.getText().length() < 5) {
+                throw new AutomacaoException("Horário limite de início inválido");
+            }
+            if (horarioLimiteFim.getText().length() < 5) {
+                throw new AutomacaoException("Horário limite de fim inválido");
+            }
+
             if (Integer.parseInt(horarioLimiteInicio.getText().substring(0, 2)) >= Integer.parseInt(horarioLimiteFim.getText().substring(0, 2))) {
                 throw new AutomacaoException("Horário de limite de fim deve ser maior que o horário de limite de ínicio");
             }

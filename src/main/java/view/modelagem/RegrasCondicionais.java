@@ -232,7 +232,7 @@ public class RegrasCondicionais extends JFrame {
         for (int i = 1; i <= numGrupos; i++) {
             combobox.addItem(String.valueOf(i));
 
-            if (grupo != null && String.valueOf(i).equals(grupo)) {
+            if (String.valueOf(i).equals(grupo)) {
                 combobox.setSelectedItem(String.valueOf(i));
             }
         }
