@@ -54,9 +54,6 @@ public class ExcelUtil {
                 Cell cell = linha.createCell(i);
                 cell.setCellValue(info.get(i));
                 cell.setCellStyle(style);
-
-                System.out.println("VALOR RECEBIDO " + info.get(i));
-                System.out.println("VALOR GUARDADO " + cell.getStringCellValue());
             }
         }
         
